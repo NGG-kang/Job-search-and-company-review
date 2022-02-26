@@ -20,4 +20,6 @@ RUN poetry install --no-dev
 
 COPY . .
 
+RUN chmod +x /usr/src/company_review/entrypoint/entrypoint.prod.sh
+
 ENTRYPOINT ["/usr/src/company_review/entrypoint/entrypoint.prod.sh"]
