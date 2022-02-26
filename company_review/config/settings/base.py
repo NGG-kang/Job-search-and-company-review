@@ -42,7 +42,7 @@ def get_secret(name, secrets=secrets):
 
 SECRET_KEY = get_secret("SECRET_KEY")
 
-ALLOWED_HOSTS = ["192.168.50.109", ".localhost", "127.0.0.1", "[::1]"]
+ALLOWED_HOSTS = get_secret("ALLOWED_HOSTS")
 
 
 # Application definition
