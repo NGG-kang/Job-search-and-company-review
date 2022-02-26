@@ -96,7 +96,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {get_secret("DATABASE")[STAGE]}
+DATABASES = get_secret("DATABASE")[STAGE]
 
 
 # Password validation
