@@ -4,6 +4,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /usr/src/company_review/
+RUN mkdir ./static
+RUN mkdir ./media
 
 RUN apt-get update 
 RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
@@ -17,3 +19,5 @@ RUN poetry config virtualenvs.create false
 RUN poetry install --no-dev
 
 COPY . .
+
+ENTRYPOINT ["/usr/src/company_review/entrypoint/entrypoint.prod.sh"]

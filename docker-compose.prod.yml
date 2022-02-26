@@ -5,16 +5,16 @@ services:
     container_name: web
     build:
       context: ./company_review
-      dockerfile: ./Dockerfile/Dockerfile.prod
-    command: gunicorn --bind 0.0.0.0:8000 config.wsgi:application
-    volumes:
-      - ./:/usr/src/company_review/
+      dockerfile: Dockerfile/Dockerfile.prod
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
     ports:
       - 8000
     env_file:
       - ./.env/.env.prod
+    volumes:
+      - static:/usr/src/company_review/static
+      - media:/usr/src/company_review/media
     depends_on:
-      - redis
       - nginx-proxy
   ###########################
   redis:
@@ -23,6 +23,8 @@ services:
       - 6379:6379
     volumes:
       - redis_data:/etc/redis_data/data
+    depends_on:
+      - web
   ###########################
   nginx-proxy:
     container_name: nginx-proxy
@@ -36,6 +38,8 @@ services:
       - vhost:/etc/nginx/vhost.d
       - html:/usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      - static:/usr/src/company_review/static
+      - media:/usr/src/company_review/media
   ###########################
   # nginx-proxy-acme:
   #   container_name: nginx-proxy-acme
@@ -58,4 +62,6 @@ volumes:
   vhost:
   html:
   acme:
+  static:
+  media:
 
