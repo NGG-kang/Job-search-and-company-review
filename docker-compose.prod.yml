@@ -11,14 +11,11 @@ services:
       - ./:/usr/src/
     ports:
       - 8000
-    depends_on:
-      - redis
     env_file:
       - ./.env/.env.prod
-  depends_on:
-    - redis
-    - nginx-proxy
-    - nginx-proxy-acme
+    depends_on:
+      - redis
+      - nginx-proxy
   ###########################
   redis:
     image: redis:6.2.6-alpine
