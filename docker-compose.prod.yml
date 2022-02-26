@@ -5,7 +5,7 @@ services:
     container_name: web
     build:
       context: ./
-      dockerfile: ./Dockerfile/Dockerfile.dev
+      dockerfile: ./Dockerfile/Dockerfile.prod
     command: gunicorn --bind 0.0.0.0:8000 conf.wsgi:application
     volumes:
       - ./:/usr/src/
