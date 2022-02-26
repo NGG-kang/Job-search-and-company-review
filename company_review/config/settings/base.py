@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-
+STAGE = os.getenv("STAGE")
 secret_file = os.path.join(BASE_DIR, "secrets/secrets.json")
 with open(secret_file) as f:
     secrets = json.loads(f.read())
@@ -96,16 +96,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "company_review",
-        "USER": "company_review",
-        "PASSWORD": "company_review",
-        "HOST": "db",
-        "PORT": "5432",
-    }
-}
+DATABASES = {get_secret("DATABASE")[STAGE]}
 
 
 # Password validation
