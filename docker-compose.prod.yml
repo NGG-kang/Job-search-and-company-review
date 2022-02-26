@@ -1,0 +1,66 @@
+version: '3.8'
+services:
+  ###########################
+  web:
+    container_name: web
+    build:
+      context: ./
+      dockerfile: ./Dockerfile/Dockerfile.dev
+    command: gunicorn --bind 0.0.0.0:8000 conf.wsgi:application
+    volumes:
+      - ./:/usr/src/
+    ports:
+      - 8000
+    depends_on:
+      - redis
+    env_file:
+      - ./.env/.env.prod
+  depends_on:
+    - redis
+    - nginx-proxy
+    - nginx-proxy-acme
+  ###########################
+  redis:
+    image: redis:6.2.6-alpine
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/etc/redis_data/data
+    depends_on:
+      - web
+  ###########################
+  nginx-proxy:
+    container_name: nginx-proxy
+    build:
+      dockerfile: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - certs:/etc/nginx/certs
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+  ###########################
+  nginx-proxy-acme:
+    container_name: nginx-proxy-acme
+    image: nginxproxy/acme-companion
+    volumes:
+      - certs:/etc/nginx/certs
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - acme:/etc/acme.sh
+    env_file:
+      - ./.env/.env.prod.nginx_acme
+    depends_on:
+      - nginx-proxy
+  ###########################
+volumes:
+  redis_data:
+  certs:
+  vhost:
+  html:
+  acme:
+

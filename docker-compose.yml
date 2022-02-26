@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile/Dockerfile.dev
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./:/usr/src/
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DEBUG=True
+      - STAGE=DEV
+      - DJANGO_SETTINGS_MODULE=config.settings.dev
+  db:
+    image: postgres:12.7-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=company_review
+      - POSTGRES_PASSWORD=company_review
+      - POSTGRES_DB=company_review
+    volumes:
+      - postgresql_data:/etc/postgresql/data
+  redis:
+    image: redis:6.2.6-alpine
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/etc/redis_data/data
+
+volumes:
+  postgresql_data:
+  redis_data:
+

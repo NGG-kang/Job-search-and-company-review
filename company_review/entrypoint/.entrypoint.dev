@@ -1,0 +1,1 @@
+celery -A celeries.celery worker -B -E -l INFO &

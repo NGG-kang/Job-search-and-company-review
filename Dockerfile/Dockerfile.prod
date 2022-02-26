@@ -1,0 +1,18 @@
+FROM python:3.10-slim
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+WORKDIR /usr/src/
+
+RUN apt-get update 
+RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+
+RUN pip install --upgrade pip
+
+COPY dist/*.whl /
+RUN pip install --no-cache-dir /*.whl \
+    && rm -rf /*.whl
+
+COPY .company_review/ .
+WORKDIR /usr/src/company_review/
