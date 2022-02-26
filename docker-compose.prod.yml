@@ -23,8 +23,6 @@ services:
       - 6379:6379
     volumes:
       - redis_data:/etc/redis_data/data
-    depends_on:
-      - web
   ###########################
   nginx-proxy:
     container_name: nginx-proxy
