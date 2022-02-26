@@ -29,6 +29,8 @@ secret_file = os.path.join(BASE_DIR, "secrets/secrets.json")
 with open(secret_file) as f:
     secrets = json.loads(f.read())
 
+DEBUG = os.getenv("DEBUG", True)
+
 
 def get_secret(name, secrets=secrets):
     try:
@@ -39,8 +41,6 @@ def get_secret(name, secrets=secrets):
 
 
 SECRET_KEY = get_secret("SECRET_KEY")
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = ["192.168.50.109", ".localhost", "127.0.0.1", "[::1]"]
 
