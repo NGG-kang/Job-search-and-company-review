@@ -4,11 +4,11 @@ services:
   web:
     container_name: web
     build:
-      context: ./
+      context: ./company_review
       dockerfile: ./Dockerfile/Dockerfile.prod
     command: gunicorn --bind 0.0.0.0:8000 conf.wsgi:application
     volumes:
-      - ./:/usr/src/
+      - ./:/usr/src/company_review/
     ports:
       - 8000
     env_file:
