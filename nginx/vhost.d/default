@@ -1,0 +1,9 @@
+location /static {
+    alias /usr/src/company_review/static/;
+    add_header Access-Control-Allow-Origin *;
+}
+
+location /media {
+    alias /usr/src/company_review/media/;
+    add_header Access-Control-Allow-Origin *;
+}
