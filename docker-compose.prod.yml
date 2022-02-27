@@ -14,8 +14,6 @@ services:
     volumes:
       - static:/usr/src/company_review/static
       - media:/usr/src/company_review/media
-    depends_on:
-      - nginx-proxy
   ###########################
   redis:
     image: redis:6.2.6-alpine
@@ -28,6 +26,7 @@ services:
   ###########################
   nginx-proxy:
     container_name: nginx-proxy
+    restart: always
     build:
       context: nginx
     ports:
@@ -40,21 +39,23 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - static:/usr/src/company_review/static
       - media:/usr/src/company_review/media
+    depends_on:
+      - web
   ###########################
-  # nginx-proxy-acme:
-  #   container_name: nginx-proxy-acme
-  #   image: nginxproxy/acme-companion
-  #   volumes:
-  #     - certs:/etc/nginx/certs
-  #     - vhost:/etc/nginx/vhost.d
-  #     - html:/usr/share/nginx/html
-  #     - /var/run/docker.sock:/tmp/docker.sock:ro
-  #     - /var/run/docker.sock:/var/run/docker.sock:ro
-  #     - acme:/etc/acme.sh
-  #   env_file:
-  #     - ./.env/.env.prod.nginx_acme
-  #   depends_on:
-  #     - nginx-proxy
+  nginx-proxy-acme:
+    container_name: nginx-proxy-acme
+    image: nginxproxy/acme-companion
+    volumes:
+      - certs:/etc/nginx/certs
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - acme:/etc/acme.sh
+    env_file:
+      - ./.env/.env.prod.nginx_acme
+    depends_on:
+      - nginx-proxy
   ###########################
 volumes:
   redis_data:
