@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import json
 from django.core.exceptions import ImproperlyConfigured
+from distutils.util import strtobool
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -29,7 +30,7 @@ secret_file = os.path.join(BASE_DIR, "secrets/secrets.json")
 with open(secret_file) as f:
     secrets = json.loads(f.read())
 
-DEBUG = os.getenv("DEBUG", True)
+DEBUG = strtobool(os.getenv("DEBUG", False))
 
 
 def get_secret(name, secrets=secrets):
