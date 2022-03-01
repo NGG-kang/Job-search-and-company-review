@@ -71,10 +71,11 @@ def jobplanet(name):
                 print(
                     "---------------------------------JOBPLNET----------------------------------------"
                 )
-                kreditjob_crawling(company=company_name)
             break
         except Exception as e:
             print(e)
+        finally:
+            kreditjob_crawling(company=company_name)
 
 
 @shared_task
