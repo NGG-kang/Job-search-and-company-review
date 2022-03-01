@@ -30,9 +30,9 @@ def get_jobkorea_search(stext):
     # 정렬 RegDtDesc: 최근등록
     Ord = "Ord=RegDtDesc"
     return_list = []
-    print(proxies)
     while True:
         url = f"https://www.jobkorea.co.kr/Search/?stext={stext}&{local}&{careerType}&{careerMin}&{careerMax}&{edu}&{Ord}&Page_No={str(Page_No)}"
+        print(url)
         resq = requests.get(
             url, proxies=proxies, headers={"User-Agent": "Chrome"}, timeout=5
         )

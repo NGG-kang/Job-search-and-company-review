@@ -10,7 +10,7 @@ def get_saramin_search(name):
     # 지역
     loc = "loc_mcd=101000%2C102000"
     # 검색단어
-    searchword = "searchword=django"
+    searchword = f"searchword={name}"
     # 정렬 관련도순: RL, 수정일순: MD, 최근등록순: RD, 마감임박순: EA, 지원자순: AD
     sort = "sort=RD"
     # 페이지
@@ -29,8 +29,10 @@ def get_saramin_search(name):
     else:
         edu_none = "edu_none=y"
     while True:
+        url = f"https://www.saramin.co.kr/zf_user/jobs/list/domestic?{loc}&{searchword}&{sort}&page={str(page)}&{edu_none}&{exp_cd}&{exp_min}&{exp_max}"
+        print(url)
         resq = requests.get(
-            f"https://www.saramin.co.kr/zf_user/jobs/list/domestic?{loc}&{searchword}&{sort}&page={str(page)}&{edu_none}&{exp_cd}&{exp_min}&{exp_max}",
+            url,
             proxies=proxies,
         )
         soup = BeautifulSoup(resq.content, "lxml")
