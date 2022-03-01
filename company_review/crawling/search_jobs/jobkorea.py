@@ -1,5 +1,12 @@
 from bs4 import BeautifulSoup
 import requests
+import os
+import sys
+import django
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.append(os.path.dirname(BASE_DIR))
 from proxy import proxies
 import re
 
@@ -23,12 +30,11 @@ def get_jobkorea_search(stext):
     # 정렬 RegDtDesc: 최근등록
     Ord = "Ord=RegDtDesc"
     return_list = []
-
+    print(proxies)
     while True:
         url = f"https://www.jobkorea.co.kr/Search/?stext={stext}&{local}&{careerType}&{careerMin}&{careerMax}&{edu}&{Ord}&Page_No={str(Page_No)}"
         resq = requests.get(
-            url,
-            # proxies=proxies
+            url, proxies=proxies, headers={"User-Agent": "Chrome"}, timeout=5
         )
 
         soup = BeautifulSoup(resq.content, "lxml")
@@ -73,6 +79,8 @@ def get_jobkorea_search(stext):
                 "deadlines": date,
             }
             return_list.append(data)
-        if Page_No == 1:
-            break
+        break
     return return_list
+
+
+# print(get_jobkorea_search("java"))
