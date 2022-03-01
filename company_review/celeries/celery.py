@@ -22,5 +22,5 @@ from crawling.search_jobs.search import search_and_save
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwrags):
     sender.add_periodic_task(
-        300.0, search_and_save.s("django", True), name="django search"
+        300.0, search_and_save.s(kwrags["q"], kwrags["celery"]), name="django search"
     )
