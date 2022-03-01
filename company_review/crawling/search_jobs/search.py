@@ -10,12 +10,10 @@ from crawling.search_jobs.jobkorea import get_jobkorea_search
 from celery import shared_task
 from crawling.models import JobPlanet, KreditJob, Saramin, SearchResult
 from itertools import chain
-from django.core.serializers.json import DjangoJSONEncoder
-import json
+from django.core.cache import cache
 
 
-@shared_task
-def search_and_save(q, celery=False):
+def search_and_save_row(q, celery=False):
     print(q)
     saramin = get_saramin_search(q)
     jobkorea = get_jobkorea_search(q)
@@ -65,10 +63,16 @@ def search_and_save(q, celery=False):
             company_info_list.append(get_company_info_dict(i, j))
             company_info_list.append(get_company_info_dict(i, k))
             i["objs"] = company_info_list
-        SearchResult.objects.update_or_create(search_q=q, data=all_jobs)
+        cache.set(q, all_jobs, 600)
+        # SearchResult.objects.update_or_create(search_q=q, data=all_jobs)
 
     return all_jobs
 
 
+@shared_task
+def search_and_save(q, celery=False):
+    search_and_save_row(q, celery)
+
+
 if __name__ == "__main__":
-    search_and_save("django", celery=True)
+    search_and_save_row("java", celery=True)
