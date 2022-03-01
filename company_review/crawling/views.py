@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import KreditJob, JobPlanet, Saramin, SearchResult
 from crawling.search_jobs.search import search_and_save
 import gc
-from django.core import serializers
+from django.core.cache import cache
 
 # Create your views here.
 
@@ -15,12 +15,12 @@ def search_result(request, **kwargs):
         template = "index.html"
     q = request.GET.get("q")
     if q:
-        try:
-            context = {"context": SearchResult.objects.filter(search_q=q).last().data}
-            # raise SearchResult.DoesNotExist
-        except SearchResult.DoesNotExist:
-            all_jobs = search_and_save(q)
-            context = {"context": all_jobs}
+        data = cache.get(q)
+        if data:
+            context = {"context": data}
+        else:
+            # search_and_save.delay(q, True)
+            context = {"data": "None"}
         gc.collect()
     else:
         context = {}
