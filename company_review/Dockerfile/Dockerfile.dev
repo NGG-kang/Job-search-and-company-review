@@ -18,3 +18,4 @@ RUN poetry config virtualenvs.create false
 RUN poetry install
 
 # COPY ./company_review .
+ENTRYPOINT ["/usr/src/company_review/entrypoint/entrypoint.dev.sh"]
