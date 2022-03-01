@@ -1,41 +1,47 @@
-{% if context %}
+
 <div class="accordion" id="accordionExample">
-    {% for i in context %}
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="heading{{forloop.counter}}">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#data{{forloop.counter}}" aria-expanded="false" aria-controls="data{{forloop.counter}}">
-          {{ i.name }}: {{ i.title }} {{ i.deadlines}}
-        </button>
-      </h2>
-      <div id="data{{forloop.counter}}" class="accordion-collapse collapse" aria-labelledby="heading{{forloop.counter}}" data-bs-parent="#accordionExample">
-        <div class="accordion-body">
-          <a href={{ i.url }}>{{i.url}}</a>
-        </div>
-        <div class="accordion-body">
-          {{i.career}}
-        </div>
-        <div class="accordion-body">
-          {{i.education}}
-        </div>
-        <div class="accordion-body">
-          {{i.employment_type}}
-        </div>
-        <div class="accordion-body">
-          {{i.work_place}}
-        </div>
-        <div class="accordion-body">
-          {% for j in i.objs %}
-              {{j.data}}
-              
-            {% endfor %}
-          {% if i in objs %}
-            {% for j in i.objs %}
-              {{j}}
-            {% endfor %}
-          {% endif %}
+  {% if context %}
+      {% for i in context %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="heading{{forloop.counter}}">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#data{{forloop.counter}}" aria-expanded="false" aria-controls="data{{forloop.counter}}">
+            {{ i.name }}: {{ i.title }} {{ i.deadlines}}
+          </button>
+        </h2>
+        <div id="data{{forloop.counter}}" class="accordion-collapse collapse" aria-labelledby="heading{{forloop.counter}}" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            <a href={{ i.url }}>{{i.url}}</a>
+          </div>
+          <div class="accordion-body">
+            {{i.career}}
+          </div>
+          <div class="accordion-body">
+            {{i.education}}
+          </div>
+          <div class="accordion-body">
+            {{i.employment_type}}
+          </div>
+          <div class="accordion-body">
+            {{i.work_place}}
+          </div>
+          <div class="accordion-body">
+            {% for obj in i.objs %}
+                {{obj.data}}
+                {{obj.company_pk}}
+                {% if obj.company_jobdam %}
+                  {% for k in obj.company_jobdam.board %}
+                    <a href="https://www.kreditjob.com/board/{{k.JOBDOM_NO}}">{{ k.TITLE }}</a> <br>
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+          </div>
         </div>
       </div>
+      {% endfor %}
+    {% elif data %}
+    <div class="accordion-item">
+      {{ request.GET.q }} 데이터 수집중입니다. 5분 뒤에 다시 검색해주세요
     </div>
-    {% endfor %}
+    {% endif %}
 </div>
-{% endif %}
+
