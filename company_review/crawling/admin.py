@@ -6,11 +6,38 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.html import format_html
 
 
+from django.core.paginator import Paginator
+from django.core.cache import cache
+
+# Modified version of a GIST I found in a SO thread
+class CachingPaginator(Paginator):
+    def _get_count(self):
+
+        if not hasattr(self, "_count"):
+            self._count = None
+
+        if self._count is None:
+            try:
+                key = "adm:{0}:count".format(hash(self.object_list.query.__str__()))
+                self._count = cache.get(key, -1)
+                if self._count == -1:
+                    self._count = super().count
+                    cache.set(key, self._count, 3600)
+
+            except:
+                self._count = len(self.object_list)
+        return self._count
+
+    count = property(_get_count)
+
+
 # Register your models here.
 @admin.register(JobPlanet)
 class JobPlanetAdmin(admin.ModelAdmin):
     list_display = ("name", "company_pk", "address", "search_address", "created")
     search_fields = ["search_address", "company_pk", "name"]
+    show_full_result_count = False
+    paginator = CachingPaginator
 
     def address(self, obj):
         return obj.data["주소"]
@@ -34,6 +61,8 @@ class OnlyJobdamFilter(admin.SimpleListFilter):
 class KreditJobAdmin(admin.ModelAdmin):
     list_filter = (OnlyJobdamFilter,)
     search_fields = ["search_address", "company_pk", "name"]
+    show_full_result_count = False
+    paginator = CachingPaginator
     list_display = (
         "id",
         "name",
@@ -70,6 +99,8 @@ class SaraminAdmin(admin.ModelAdmin):
         "company_pk",
         "created",
     )
+    show_full_result_count = False
+    paginator = CachingPaginator
     search_fields = ["search_address", "company_pk", "name"]
 
 
