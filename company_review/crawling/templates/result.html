@@ -9,32 +9,85 @@
           </button>
         </h2>
         <div id="data{{forloop.counter}}" class="accordion-collapse collapse" aria-labelledby="heading{{forloop.counter}}" data-bs-parent="#accordionExample">
+          {% comment %} 공고 정보 {% endcomment %}
           <div class="accordion-body">
             <a href={{ i.url }}>{{i.url}}</a>
           </div>
           <div class="accordion-body">
-            {{i.career}}
+            경력: {{i.career}}
           </div>
           <div class="accordion-body">
-            {{i.education}}
+            교육: {{i.education}}
           </div>
           <div class="accordion-body">
-            {{i.employment_type}}
+            구인 유형: {{i.employment_type}}
           </div>
           <div class="accordion-body">
-            {{i.work_place}}
+            지역: {{i.work_place}}
           </div>
+          
+
+          {% comment %} KreditJob {% endcomment %}
           <div class="accordion-body">
-            {% for obj in i.objs %}
-                {{obj.data}}
-                {{obj.company_pk}}
-                {% if obj.company_jobdam %}
-                  {% for k in obj.company_jobdam.board %}
-                    <a href="https://www.kreditjob.com/board/{{k.JOBDOM_NO}}">{{ k.TITLE }}</a> <br>
-                  {% endfor %}
-                {% endif %}
-              {% endfor %}
+            KreditJob
+          {% if i.objs.2 %}
+              <br>
+              이름 : {{i.objs.2.name}} <br>
+              링크 : <a href="https://www.kreditjob.com/company/{{i.objs.2.company_pk}}">{{i.objs.2.company_pk}}</a> <br>
+              기업정보 : 
+              소재지 : {{i.objs.2.company_info_data.companyInfoData.WKP_ADRS}} <br>
+              인원수 : {{i.objs.2.company_info_data.companyInfoData.PRSN_BASE}}명 <br>
+              업력 : {{i.objs.2.company_info_data.companyInfoData.COMPANY_AGE}}년 <br>
+              데이터 기록 시간 : {{i.objs.2.company_info_data.companyInfoData.DATA_YM_MAX}} <br>
+              잡담 : <br/>
+
+              {% if i.objs.2.company_jobdam %}
+                {% for k in i.objs.2.company_jobdam.board %}
+                  <a href="https://www.kreditjob.com/board/{{k.JOBDOM_NO}}">{{ k.TITLE }}</a> <br>
+                {% endfor %}
+              {% else %}
+              None
+              {% endif %}
+          {% else %}
+               : 매칭 없음
+            <br/>
+          {% endif %}
           </div>
+
+          {% comment %} Saramin {% endcomment %}
+          <div class="accordion-body">
+            Saramin: 
+          {% if i.objs.0 %}          
+          <br/>
+          이름 : {{i.objs.0.name}} <br>
+          링크 : <a href="https://www.saramin.co.kr/zf_user/company-info/view?csn={{i.objs.0.company_pk}}">{{i.objs.0.company_pk}}</a> <br>
+          {% for key, value in i.objs.1.data.items %}
+            {{key}} : {{value}}<br/>
+            {% endfor%}
+          {% else %}
+            매칭 없음
+            <br/>
+          {% endif %}
+          </div>
+
+          {% comment %} Jobkorea {% endcomment %}
+          <div class="accordion-body">
+            Jobkorea : 
+          {% if i.objs.1 %}  
+          <br>        
+            이름 : {{i.objs.1.name}} <br/>
+            링크 : <a href="https://www.jobkorea.co.kr/Company/{{i.objs.1.company_pk}}/">{{i.objs.1.company_pk}}</a> <br/>
+            {% for key, value in i.objs.1.data.items %}
+            {{key}} : {{value}}<br/>
+            {% endfor%}
+            
+          {% else %}
+              매칭 없음
+            <br/>
+          {% endif %}
+          </div>
+          
+
         </div>
       </div>
       {% endfor %}
