@@ -19,7 +19,7 @@ from django.conf import settings
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("crawling/", include("crawling.urls")),
+    path("", include("crawling.urls")),
 ]
 
 if settings.DEBUG:
