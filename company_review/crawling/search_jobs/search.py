@@ -42,8 +42,8 @@ def search_and_save_row(q, celery=False):
                 "name",
                 "search_address",
                 "company_pk",
-                # "company_base_content",
-                # "company_info_data",
+                "company_base_content",
+                "company_info_data",
                 "company_jobdam",
             )
         )
