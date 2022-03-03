@@ -35,9 +35,13 @@ def search_and_save_row(q, celery=False):
                 return _s
             return None
 
-        s = get_model_dict(s.values("name", "search_address", "company_pk", "data"))
-        j = get_model_dict(j.values("name", "search_address", "company_pk", "data"))
-        k = get_model_dict(
+        saramin_object = get_model_dict(
+            s.values("name", "search_address", "company_pk", "data")
+        )
+        jobplanet_object = get_model_dict(
+            j.values("name", "search_address", "company_pk", "data")
+        )
+        kreditjob_object = get_model_dict(
             k.values(
                 "name",
                 "search_address",
@@ -59,9 +63,9 @@ def search_and_save_row(q, celery=False):
 
         for i in all_jobs:
             company_info_list = list()
-            company_info_list.append(get_company_info_dict(i, s))
-            company_info_list.append(get_company_info_dict(i, j))
-            company_info_list.append(get_company_info_dict(i, k))
+            company_info_list.append(get_company_info_dict(i, saramin_object))
+            company_info_list.append(get_company_info_dict(i, jobplanet_object))
+            company_info_list.append(get_company_info_dict(i, kreditjob_object))
             i["objs"] = company_info_list
         cache.set(q, all_jobs, 600)
         # SearchResult.objects.update_or_create(search_q=q, data=all_jobs)

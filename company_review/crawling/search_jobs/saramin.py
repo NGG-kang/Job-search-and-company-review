@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import re
 from proxy import proxies
+from crawling.models import Saramin
 
 
 def get_saramin_search(name):
@@ -45,11 +46,15 @@ def get_saramin_search(name):
         for company in search_list:
             # 기업 이름
             company_nm = company.find("div", {"class": "col company_nm"})
-            company_nm = company_nm.find("a")
-            company_url = company_nm["href"]
-            name = company_nm["title"]
-            name = re.sub(r"\([^)]*\)", "", name)
-            name = re.sub(r"[^a-zA-Z0-9가-힣]", "", name)
+            company_name = company_nm.find("a")["title"]
+            company_pk = company_nm.find("button")["csn"]
+            if not Saramin.objects.filter(company_pk=company_pk):
+                from celeries.celery import get_company_info
+
+                get_company_info.delay(company_name)
+
+            company_name = re.sub(r"\([^)]*\)", "", company_name)
+            company_name = re.sub(r"[^a-zA-Z0-9가-힣]", "", company_name)
             # 제목
             notification_info = company.find("div", {"class": "col notification_info"})
             notification_info = notification_info.find("a")
@@ -71,7 +76,7 @@ def get_saramin_search(name):
             support_info = company.find("div", {"class": "col support_info"})
             deadlines = support_info.find("p", class_="deadlines").text
             data = {
-                "name": name,
+                "name": company_name,
                 "title": title,
                 "url": url,
                 "career": career,
