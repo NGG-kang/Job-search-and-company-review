@@ -76,7 +76,7 @@
           {% if i.objs.1 %}  
           <br>        
             이름 : {{i.objs.1.name}} <br/>
-            링크 : <a href="https://www.jobkorea.co.kr/Company/{{i.objs.1.company_pk}}/">{{i.objs.1.company_pk}}</a> <br/>
+            링크 : <a href="https://www.jobplanet.co.kr/companies/{{i.objs.1.company_pk}}/">{{i.objs.1.company_pk}}</a> <br/>
             {% for key, value in i.objs.1.data.items %}
             {{key}} : {{value}}<br/>
             {% endfor%}
