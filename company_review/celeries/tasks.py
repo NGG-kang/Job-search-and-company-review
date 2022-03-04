@@ -14,6 +14,12 @@ import requests
 import re
 
 
+def process_name(name):
+    name = re.sub(r"\([^)]*\)", "", name)
+    name = re.sub(r"[^a-zA-Z0-9가-힣]", "", name)
+    return name
+
+
 def get_jobplanet_company(name):
     print(
         "---------------------------------JOBPLNET----------------------------------------"
@@ -64,8 +70,21 @@ def get_jobplanet_company(name):
                     company_name, company_info = find_content(soup)
                     print(company_name)
                     print(company_info)
+                    address = company_info["주소"]
+                    _address = address.replace("본사: ", "")
+                    _address = address.split(" ")
+                    if len(_address) >= 2:
+                        _address[0] = _address[0].replace("광역시", "")
+                        _address[0] = _address[0].replace(",", "")
+                        search_address = f"{_address[0]} {_address[1]}"
+                    else:
+                        search_address = address
                     JobPlanet(
-                        name=company_name, company_pk=_id, data=company_info
+                        name=process_name(company_name),
+                        company_pk=_id,
+                        data=company_info,
+                        address=address,
+                        search_address=search_address,
                     ).save()
                 print(
                     "---------------------------------JOBPLNET----------------------------------------"
@@ -101,14 +120,24 @@ def get_saramin_company(name):
                     corp_info = company.find("div", class_="corp_info")
                     data_list = corp_info.find_all("dl")
                     address = ""
+                    _address = ""
                     for val in data_list:
                         key = val.find("dt").text.strip()
                         value = re.sub(r" {2,}", "", val.find("dd").text.strip())
                         if key == "기업주소":
                             address = value
+                            _address = address.split(" ")
+                            if len(_address) >= 2:
+                                _address[0] = _address[0].replace("광역시", "")
+                                _address[0] = _address[0].replace(",", "")
+                                _address = f"{_address[0]} {_address[1]}"
                         data[key] = value
                     Saramin(
-                        name=name, company_pk=company_pk, address=address, data=data
+                        name=process_name(name),
+                        company_pk=company_pk,
+                        address=address,
+                        data=data,
+                        search_address=_address,
                     ).save()
             except:
                 pass
@@ -183,9 +212,15 @@ def get_kreditjob_company(company):
 
                 print("-----------------기업기본정보---------------------")
                 print(company_base_content)
+                _address = WKP_ADRS.split(" ")
+                if len(_address) >= 2:
+                    _address[0] = _address[0].replace("광역시", "")
+                    _address[0] = _address[0].replace(",", "")
+                    _address = f"{_address[0]} {_address[1]}"
                 KreditJob(
-                    name=CMPN_NM,
+                    name=process_name(CMPN_NM),
                     address=WKP_ADRS,
+                    search_address=_address,
                     company_pk=PK_NM_HASH,
                     company_base_content=company_base_content,
                     company_info_data=company_info_data,
