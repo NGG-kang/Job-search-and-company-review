@@ -30,7 +30,7 @@ def get_saramin_search(name):
     else:
         edu_none = "edu_none=y"
     while True:
-        url = f"https://www.saramin.co.kr/zf_user/jobs/list/domestic?{loc}&{searchword}&{sort}&page={str(page)}&{edu_none}&{exp_cd}&{exp_min}&{exp_max}"
+        url = f"https://www.saramin.co.kr/zf_user/jobs/list/domestic?{loc}&{searchword}&{sort}&page={str(page)}&{exp_cd}&{exp_min}&{exp_max}"
         print(url)
         resq = requests.get(
             url,
@@ -41,8 +41,8 @@ def get_saramin_search(name):
         search_list = search_list.find_all("div", {"id": re.compile(r"rec-.*")})
         if not search_list:
             return return_list
-        else:
-            page += 1
+        if page == 3:
+            break
         for company in search_list:
             # 기업 이름
             company_nm = company.find("div", {"class": "col company_nm"})
@@ -86,6 +86,6 @@ def get_saramin_search(name):
                 "deadlines": deadlines,
             }
             return_list.append(data)
-        if page == 1:
-            break
+        page += 1
+        
         return return_list
