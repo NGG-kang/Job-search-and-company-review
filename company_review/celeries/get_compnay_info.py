@@ -49,8 +49,6 @@ def get_jobplanet_company(name):
             if html.status_code in (302, 404):
                 break
             # 업데이트 할거면 풀기
-            # print(company_name)
-            # print(company_info)
             for company in companies:
                 name = company["name"]
                 _id = company["id"]
@@ -68,8 +66,6 @@ def get_jobplanet_company(name):
                     )
                     soup = BeautifulSoup(html.content, "lxml")
                     company_name, company_info = find_content(soup)
-                    print(company_name)
-                    print(company_info)
                     address = company_info["주소"]
                     _address = address.replace("본사: ", "")
                     _address = address.split(" ")
@@ -86,9 +82,7 @@ def get_jobplanet_company(name):
                         address=address,
                         search_address=search_address,
                     ).save()
-                print(
-                    "---------------------------------JOBPLNET----------------------------------------"
-                )
+                    print(company_name, "저장")
             break
         except Exception as e:
             print(e)
@@ -115,6 +109,7 @@ def get_saramin_company(name):
                 company_pk = url.split("csn=")[-1]
                 try:
                     Saramin.objects.get(company_pk=company_pk)
+                    print("skip")
                 except Saramin.DoesNotExist:
                     data = {}
                     corp_info = company.find("div", class_="corp_info")
@@ -131,6 +126,8 @@ def get_saramin_company(name):
                                 _address[0] = _address[0].replace("광역시", "")
                                 _address[0] = _address[0].replace(",", "")
                                 _address = f"{_address[0]} {_address[1]}"
+                            else:
+                                _address = address
                         data[key] = value
                     Saramin(
                         name=process_name(name),
@@ -139,6 +136,7 @@ def get_saramin_company(name):
                         data=data,
                         search_address=_address,
                     ).save()
+                    print(name, "저장")
             except:
                 pass
         page += 1
@@ -158,10 +156,8 @@ def get_kreditjob_company(company):
     )
     search_response = search_response.get("docs")
 
-    print("-----------------검색---------------------")
     for search_company in search_response:
         try:
-            print(search_company)
             CMPN_NM = search_company["CMPN_NM"]
             WKP_ADRS = search_company["WKP_ADRS"]
             PK_NM_HASH = search_company["PK_NM_HASH"]
@@ -210,13 +206,13 @@ def get_kreditjob_company(company):
                 # print("-----------------기업잡담---------------------")
                 # print(company_jobdam)
 
-                print("-----------------기업기본정보---------------------")
-                print(company_base_content)
                 _address = WKP_ADRS.split(" ")
                 if len(_address) >= 2:
                     _address[0] = _address[0].replace("광역시", "")
                     _address[0] = _address[0].replace(",", "")
                     _address = f"{_address[0]} {_address[1]}"
+                else:
+                    _address = WKP_ADRS
                 KreditJob(
                     name=process_name(CMPN_NM),
                     address=WKP_ADRS,
@@ -226,11 +222,6 @@ def get_kreditjob_company(company):
                     company_info_data=company_info_data,
                     company_jobdam=company_jobdam,
                 ).save()
+                print(CMPN_NM, "저장")
         except:
             pass
-
-
-def get_company_info(name):
-    get_jobplanet_company(name)
-    get_saramin_company(name)
-    get_kreditjob_company(name)
