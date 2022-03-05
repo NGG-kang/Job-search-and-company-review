@@ -17,7 +17,7 @@ sys.path.append(os.path.dirname(BASE_DIR))
 django.setup()
 
 from crawling.search_jobs.search import search_and_save
-from celeries.tasks import (
+from celeries.get_compnay_info import (
     get_kreditjob_company,
     get_saramin_company,
     get_jobplanet_company,
