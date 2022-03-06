@@ -67,7 +67,7 @@ def search_and_save_row(q, celery=False):
             company_info_list.append(get_company_info_dict(i, jobplanet_object))
             company_info_list.append(get_company_info_dict(i, kreditjob_object))
             i["objs"] = company_info_list
-        cache.set(q, all_jobs, 600)
+        cache.set(q, all_jobs, 3900)
         # SearchResult.objects.update_or_create(search_q=q, data=all_jobs)
 
     return all_jobs
