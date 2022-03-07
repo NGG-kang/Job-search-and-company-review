@@ -37,7 +37,7 @@ def get_jobkorea_search(stext):
         headers = Headers(os="mac", headers=True).generate()
         url = f"https://www.jobkorea.co.kr/Search/?stext={stext}&{local}&{careerType}&{careerMin}&{careerMax}&{Ord}&Page_No={str(Page_No)}"
         print(url)
-        resq = requests.get(url, proxies=proxies, headers=headers, timeout=5)
+        resq = requests.get(url, headers=headers, timeout=5)
 
         soup = BeautifulSoup(resq.content, "lxml")
         search_list = soup.find("div", class_="recruit-info")
