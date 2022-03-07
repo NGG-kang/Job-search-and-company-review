@@ -1,7 +1,7 @@
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render
 from .models import KreditJob, JobPlanet, Saramin, SearchResult
-from crawling.search_jobs.search import search_and_save
-import gc
+from celeries.celery import get_company_info
 from django.core.cache import cache
 
 # Create your views here.
@@ -21,7 +21,14 @@ def search_result(request, **kwargs):
         else:
             # search_and_save.delay(q, True)
             context = {"data": "None"}
-        gc.collect()
     else:
         context = {}
     return render(request=request, template_name=template, context=context)
+
+
+def update_company(request, **kwargs):
+    if request.POST:
+        company = request.POST.get("company")
+        get_company_info.delay(company)
+        return JsonResponse({"message": "success"})
+    return HttpResponseBadRequest("")

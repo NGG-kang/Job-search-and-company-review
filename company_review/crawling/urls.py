@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import search_result
+from crawling import views
 
 urlpatterns = [
-    path("", search_result, name="search"),    
+    path("", views.search_result, name="search"),
+    path("update_company/", views.update_company, name="update_company"),
 ]
