@@ -1,4 +1,3 @@
-
 <div class="accordion" id="accordionExample">
   {% if context %}
       {% for i in context %}
@@ -85,9 +84,12 @@
               매칭 없음
             <br/>
           {% endif %}
-          </div>
+          </div> 
+          <button hx-post="{% url 'update_company' %}"
+          hx-trigger="click"
+          hx-target="#liveToast"
+          hx-swap="outerHTML" type="button" class="btn btn-primary" id="liveToastBtn">Show live toast</button>
           
-
         </div>
       </div>
       {% endfor %}
