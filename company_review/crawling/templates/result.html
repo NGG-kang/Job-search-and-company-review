@@ -85,10 +85,10 @@
             <br/>
           {% endif %}
           </div> 
-          <button hx-post="{% url 'update_company' %}"
+          <div hx-post="/"
           hx-trigger="click"
           hx-target="#liveToast"
-          hx-swap="outerHTML" type="button" class="btn btn-primary" id="liveToastBtn" type="button" class="btn btn-primary" id="liveToastBtn">Show live toast</button>
+          hx-swap="outerHTML" type="button" class="btn btn-primary" id="liveToastBtn" type="button" class="btn btn-primary" id="liveToastBtn">Show live toast</div>
         </div>
       </div>
       {% endfor %}

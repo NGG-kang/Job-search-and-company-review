@@ -1,15 +1,28 @@
 {% load static %}
 {% load django_htmx %}
 {% django_htmx_script %}
-    <head>
-        <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-        <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
-    </head>
-    <body>
-        <div class="container-sm ">
-          {% include 'header.html' %}
-          {% block index %}
-          {% endblock index %}
-        </div>
-    </body>
+
+<head>
+  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+  <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+  <script src="https://unpkg.com/htmx.org@1.7.0"></script>
+
+</head>
+
+<body>
+  <div class="container-sm ">
+    {% include 'header.html' %}
+    {% block index %}{% endblock index %}
+  </div>
+  <script>
+    document
+      .body
+      .addEventListener('htmx:configRequest', (event) => {
+        event
+          .detail
+          .headers['X-CSRFToken'] = '{{ csrf_token }}';
+      })
+  </script>
+</body>
+
 </html>
