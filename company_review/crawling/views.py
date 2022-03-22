@@ -27,8 +27,9 @@ def search_result(request, **kwargs):
 
 
 def update_company(request, **kwargs):
-    if request.POST:
-        company = request.POST.get("company")
-        get_company_info.delay(company)
-        return JsonResponse({"message": "success"})
-    return HttpResponseBadRequest("")
+    if request.htmx:
+        if request.POST:
+            company = request.POST.get("company")
+            get_company_info.delay(company, True)
+            return JsonResponse({"message": "success"})
+    return HttpResponseBadRequest("using method post")
