@@ -77,7 +77,7 @@ def get_jobplanet_company(name, update=False):
                         address,
                         search_address,
                     ) = get_company_content(_id)
-                    j.name = (process_name(company_name),)
+                    j.name = process_name(company_name)
                     j.company_pk = (_id,)
                     j.data = (company_info,)
                     j.address = address
@@ -149,7 +149,7 @@ def get_saramin_company(name, update=False):
                         print("skip")
                         continue
                     address, search_address, data = get_company_content(soup)
-                    s.name = (process_name(name),)
+                    s.name = process_name(name)
                     s.company_pk = company_pk
                     s.address = address
                     s.data = data
