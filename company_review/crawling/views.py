@@ -30,6 +30,18 @@ def update_company(request, **kwargs):
     if request.htmx:
         if request.POST:
             company = request.POST.get("company")
-            get_company_info.delay(company, True)
+            # get_company_info.delay(company, True)
             return JsonResponse({"message": "success"})
     return HttpResponseBadRequest("using method post")
+
+
+
+def search_company(request, **kwargs):
+    template = "search_company.html"
+    company = request.GET.get("company")
+    if company:
+        s = Saramin.objects.filter(name=company).values()
+        j = JobPlanet.objects.filter(name=company).values()
+        k = KreditJob.objects.filter(name=company).values()
+        context = {"saramin": s, "jobplanet": j, "kreditjob": k}
+    return render(request=request, template_name=template, context=context)
