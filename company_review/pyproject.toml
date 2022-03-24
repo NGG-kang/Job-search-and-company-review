@@ -35,6 +35,7 @@ django-crispy-forms = "^1.14.0"
 black = "^21.12b0"
 djhtml = "^1.5.0"
 poetry-lock-package = "^0.4.4"
+flake8 = "^4.0.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
