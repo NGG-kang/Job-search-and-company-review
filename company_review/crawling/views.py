@@ -20,8 +20,12 @@ def search_result(request, **kwargs):
         if data:
             context = {"context": data}
         else:
+            try:
+                PeriodicTask.objects.get(name=q)
+                context = {"data": True}
+            except PeriodicTask.DoesNotExist:
+                context = {"data": False}
             # search_and_save.delay(q, True)
-            context = {"data": "None"}
     else:
         context = {}
     return render(request=request, template_name=template, context=context)
@@ -61,5 +65,5 @@ def add_search_cron_beat(request):
                 )
                 return JsonResponse({"message": "success"})
             except Exception:
-                return HttpResponseBadRequest("Already save company")            
+                return HttpResponseBadRequest("Already save company")
     return HttpResponseBadRequest("using method post")
