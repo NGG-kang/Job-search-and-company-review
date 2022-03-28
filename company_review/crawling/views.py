@@ -1,4 +1,4 @@
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render
 from .models import KreditJob, JobPlanet, Saramin
 from celeries.celery import get_company_info
@@ -67,3 +67,10 @@ def add_search_cron_beat(request):
             except Exception:
                 return HttpResponseBadRequest("Already save company")
     return HttpResponseBadRequest("using method post")
+
+
+def get_periodic_task(request):
+    if request.htmx:
+        tasks = {"tasks": PeriodicTask.objects.all().values("name", "task", "last_run_at", "interval__period", "interval__every", )}
+        return render(request=request, template_name="period_task.html", context=tasks)
+    return HttpResponseBadRequest()
