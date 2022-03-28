@@ -30,7 +30,7 @@ def get_saramin_search(name):
     else:
         edu_none = "edu_none=y"
     while True:
-        url = f"https://www.saramin.co.kr/zf_user/jobs/list/domestic?{loc}&{searchword}&{sort}&page={str(page)}&{exp_cd}&{exp_min}&{exp_max}"
+        url = f"https://www.saramin.co.kr/zf_user/jobs/list/domestic?{loc}&{searchword}&{sort}&page={str(page)}&{exp_cd}&{exp_min}&{exp_max}&exp_none=y"
         print(url)
         resq = requests.get(
             url,
