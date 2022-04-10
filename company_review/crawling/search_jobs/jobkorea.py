@@ -74,6 +74,7 @@ def get_jobkorea_search(stext):
                 if len(_location) >= 2:
                     location = f"{_location[0]} {_location[1]}"
             data = {
+                "site": "jobkorea",
                 "name": name,
                 "title": title,
                 "url": url,
