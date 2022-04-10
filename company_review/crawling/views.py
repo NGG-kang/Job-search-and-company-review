@@ -14,20 +14,15 @@ def search_result(request, **kwargs):
         template = "result.html"
     else:
         template = "index.html"
+    context = {}
+    tasks = {"tasks": PeriodicTask.objects.all().values("name", "task", "last_run_at", "interval__period", "interval__every", )}
     q = request.GET.get("q")
     if q:
         data = cache.get(q)
         if data:
-            context = {"context": data}
-        else:
-            try:
-                PeriodicTask.objects.get(name=q)
-                context = {"data": True}
-            except PeriodicTask.DoesNotExist:
-                context = {"data": False}
-            # search_and_save.delay(q, True)
+            context = {"context": data, **tasks}
     else:
-        context = {}
+        context = tasks
     return render(request=request, template_name=template, context=context)
 
 
@@ -67,10 +62,3 @@ def add_search_cron_beat(request):
             except Exception:
                 return HttpResponseBadRequest("Already save company")
     return HttpResponseBadRequest("using method post")
-
-
-def get_periodic_task(request):
-    if request.htmx:
-        tasks = {"tasks": PeriodicTask.objects.all().values("name", "task", "last_run_at", "interval__period", "interval__every", )}
-        return render(request=request, template_name="period_task.html", context=tasks)
-    return HttpResponseBadRequest()

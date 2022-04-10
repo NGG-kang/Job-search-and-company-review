@@ -5,5 +5,4 @@ urlpatterns = [
     path("", views.search_result, name="search"),
     path("update_company/", views.update_company, name="update_company"),
     path("add-search-info/", views.add_search_cron_beat, name="add-search-info"),
-    path("periodic_task/", views.get_periodic_task, name="periodic_task"),
 ]
