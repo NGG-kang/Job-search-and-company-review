@@ -1,4 +1,8 @@
 {% extends 'base.html' %}
+{% block tasks %}
+  {% include 'period_task.html' %}
+{% endblock tasks %}
+
 {% block index %}
-{% include 'result.html' %}
+  {% include 'result.html' %}
 {% endblock index %}

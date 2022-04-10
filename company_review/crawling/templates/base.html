@@ -12,7 +12,12 @@
 <body>
   <div class="container-sm ">
     {% include 'header.html' %}
-    {% block index %}{% endblock index %}
+    <div class="row mb-4">
+      {% block tasks %}{% endblock tasks %}
+    </div>
+    <div class="row">
+      {% block index %}{% endblock index %}
+    </div>
   </div>
   <script>
     document
