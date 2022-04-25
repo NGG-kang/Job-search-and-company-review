@@ -5,7 +5,7 @@
       <div class="accordion-item">
         <h2 class="accordion-header" id="heading{{forloop.counter}}">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#data{{forloop.counter}}" aria-expanded="false" aria-controls="data{{forloop.counter}}">
-            ({{i.site}}) {{ i.name }}: {{ i.title }} {{ i.deadlinesf }}
+            ({{i.site}}) {{ i.name }}: {{ i.title }} {{ i.deadlines }}
           </button>
         </h2>
         <div id="data{{forloop.counter}}" class="accordion-collapse collapse" aria-labelledby="heading{{forloop.counter}}" data-bs-parent="#accordionExample">
@@ -94,15 +94,26 @@
         </div>
       </div>
       {% endfor %}
-    {% elif data == True %}
-    <div class="accordion-item">
-      {{ request.GET.q }} 데이터 수집중입니다. 5분 뒤에 다시 검색해주세요
+  {% elif data == True %}
+  <div>
+    {{ request.GET.q }} 데이터 수집중입니다. 5분 뒤에 다시 검색해주세요
+  </div>
+  {% elif data == False %}
+  <div>
+    {{ request.GET.q }} 데이터 수집중이 아닙니다.
+      <form hx-post="{% url 'add-search-info' %}" hx-trigger="click" 
+      hx-swap="none">
+        <input name="company" type="hidden" value={{ request.GET.q }}>
+        <button class="btn btn-primary" type="submit" id="liveToastBtn_crawling">{{request.GET.q}} 크롤링 요청</button>
+    </form>
     </div>
-    {% elif data == False %}
-    <div class="accordion-item">
-      {{ request.GET.q }} 데이터 수집중이 아닙니다.
-    </div>
-    {% endif %}
+  {% else %}
+  <form hx-post="{% url 'add-search-info' %}" hx-trigger="click"
+    hx-swap="none">
+      <input name="company" type="hidden" value={{ request.GET.q }}>
+      <button class="btn btn-primary" type="submit">{{request.GET.q}} 크롤링 요청</button>
+  </form>
+  {% endif %}
 </div>
 
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
