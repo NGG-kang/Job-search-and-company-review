@@ -1,28 +1,30 @@
-from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render
 from .models import KreditJob, JobPlanet, Saramin
 from celeries.celery import get_company_info
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from django.core.cache import cache
 
-# Create your views here.
-
 
 def search_result(request, **kwargs):
-
+    context = {}    
     if request.htmx:
         template = "result.html"
     else:
         template = "index.html"
-    context = {}
-    tasks = {"tasks": PeriodicTask.objects.all().values("name", "task", "last_run_at", "interval__period", "interval__every", )}
+
     q = request.GET.get("q")
     if q:
         data = cache.get(q)
         if data:
-            context = {"context": data, **tasks}
-    else:
-        context = tasks
+            context = {"context": data}
+    try:
+        PeriodicTask.objects.get(name=q)
+        data = True
+    except PeriodicTask.DoesNotExist:
+        data = False
+    context["data"] = data
+    context["tasks"] = PeriodicTask.objects.all().values("name", "task", "last_run_at", "interval__period", "interval__every", )
     return render(request=request, template_name=template, context=context)
 
 
@@ -56,7 +58,8 @@ def add_search_cron_beat(request):
                     name=company,
                     task="crawling.search_jobs.search.search_and_save",
                     enabled=True,
-                    interval=interval
+                    interval=interval,
+                    args=f'["{company}", "True"]'
                 )
                 return JsonResponse({"message": "success"})
             except Exception:
