@@ -14,25 +14,31 @@ from django.core.cache import cache
 
 
 def search_and_save_row(q, celery=False):
-    print(q)
     saramin = get_saramin_search(q)
     jobkorea = get_jobkorea_search(q)
     all_jobs = list(chain(saramin, jobkorea))
     if celery:
         names = [i["name"] for i in list(chain(saramin, jobkorea))]
-        s = Saramin.objects.filter(name__in=names)
-        k = KreditJob.objects.filter(name__in=names)
-        j = JobPlanet.objects.filter(name__in=names)
+        s = Saramin.objects.filter(name__in=names).only("name", "search_address", "company_pk", "data")
+        k = KreditJob.objects.filter(name__in=names).only(
+                "name",
+                "search_address",
+                "company_pk",
+                "company_base_content",
+                "company_info_data",
+                "company_jobdam",
+            )
+        j = JobPlanet.objects.filter(name__in=names).only("name", "search_address", "company_pk", "data")
 
-        def get_model_dict(s):
-            if s:
-                _s = dict()
-                for i in s:
-                    if i["name"] in _s:
-                        _s[i["name"]].append(i)
+        def get_model_dict(objs):
+            if objs:
+                obj = dict()
+                for i in objs:
+                    if i["name"] in obj:
+                        obj[i["name"]].append(i)
                     else:
-                        _s[i["name"]] = [i]
-                return _s
+                        obj[i["name"]] = [i]
+                return obj
             return None
 
         saramin_object = get_model_dict(
@@ -52,22 +58,22 @@ def search_and_save_row(q, celery=False):
             )
         )
 
-        def get_company_info_dict(i, value_dict):
-            if i["name"] in value_dict:
-                for j in value_dict[i["name"]]:
-                    if i["work_place"] == j["search_address"]:
+        def get_company_info_dict(job, value_dict):
+            if job["name"] in value_dict:
+                for j in value_dict[job["name"]]:
+                    if job["work_place"] == j["search_address"]:
                         return j
-                return None
+                return [{} for val in value_dict]
             else:
                 return None
 
-        for i in all_jobs:
+        for job in all_jobs:
             company_info_list = list()
-            company_info_list.append(get_company_info_dict(i, saramin_object))
-            company_info_list.append(get_company_info_dict(i, jobplanet_object))
-            company_info_list.append(get_company_info_dict(i, kreditjob_object))
-            i["objs"] = company_info_list
-        cache.set(q, all_jobs, 3900)
+            company_info_list.append(get_company_info_dict(job, saramin_object))
+            company_info_list.append(get_company_info_dict(job, jobplanet_object))
+            company_info_list.append(get_company_info_dict(job, kreditjob_object))
+            job["objs"] = company_info_list
+        cache.set(q, all_jobs, None)
         # SearchResult.objects.update_or_create(search_q=q, data=all_jobs)
 
     return all_jobs
