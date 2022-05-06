@@ -78,10 +78,10 @@ def get_jobplanet_company(name, update=False):
                         search_address,
                     ) = get_company_content(_id)
                     j.name = process_name(company_name)
-                    j.company_pk = (_id,)
-                    j.data = (company_info,)
+                    j.company_pk = _id
+                    j.data = company_info
                     j.address = address
-                    j.search_address = (search_address,)
+                    j.search_address = search_address
                     j.save()
                     print(company_name, "업데이트")
                 except JobPlanet.DoesNotExist:
@@ -229,7 +229,7 @@ def get_kreditjob_company(company, update=False):
                     company_info_data,
                     company_jobdam,
                 ) = get_company_content(PK_NM_HASH)
-                k.name = CMPN_NM
+                k.name = process_name(CMPN_NM)
                 k.address = WKP_ADRS
                 k.company_base_content = company_base_content
                 k.company_info_data = company_info_data
