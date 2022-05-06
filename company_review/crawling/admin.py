@@ -34,7 +34,7 @@ class CachingPaginator(Paginator):
 # Register your models here.
 @admin.register(JobPlanet)
 class JobPlanetAdmin(admin.ModelAdmin):
-    list_display = ("name", "company_pk", "address", "search_address", "created")
+    list_display = ("name", "company_pk", "address", "search_address", "created", "updated")
     search_fields = ["search_address", "company_pk", "name"]
     show_full_result_count = False
     paginator = CachingPaginator
@@ -71,6 +71,7 @@ class KreditJobAdmin(admin.ModelAdmin):
         "company_pk",
         "jobdam",
         "created",
+        "updated"
     )
 
     def jobdam(self, obj):
@@ -98,6 +99,7 @@ class SaraminAdmin(admin.ModelAdmin):
         "search_address",
         "company_pk",
         "created",
+        "updated"
     )
     show_full_result_count = False
     paginator = CachingPaginator
