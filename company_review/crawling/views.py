@@ -32,7 +32,7 @@ def update_company(request, **kwargs):
     if request.htmx:
         if request.POST:
             company = request.POST.get("company")
-            get_company_info.delay(company, True)
+            get_company_info.delay(company, update=True)
             return JsonResponse({"message": "success"})
     return HttpResponseBadRequest("using method post")
 
