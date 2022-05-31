@@ -52,14 +52,12 @@ def search_and_save_row(q, celery=False):
                 "name",
                 "search_address",
                 "company_pk",
-                "company_base_content",
-                "company_info_data",
                 "company_jobdam",
             )
         )
 
         def get_company_info_dict(job, value_dict):
-            if job["name"] in value_dict:
+            if value_dict and job["name"] in value_dict:
                 for j in value_dict[job["name"]]:
                     if job["work_place"] == j["search_address"]:
                         return j
