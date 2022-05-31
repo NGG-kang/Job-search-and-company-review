@@ -52,6 +52,8 @@ def search_and_save_row(q, celery=False):
                 "name",
                 "search_address",
                 "company_pk",
+                # "company_base_content",
+                "company_info_data",
                 "company_jobdam",
             )
         )
@@ -61,7 +63,7 @@ def search_and_save_row(q, celery=False):
                 for j in value_dict[job["name"]]:
                     if job["work_place"] == j["search_address"]:
                         return j
-                return [{} for val in value_dict]
+                return [val for val in value_dict[job["name"]]]
             else:
                 return None
 
