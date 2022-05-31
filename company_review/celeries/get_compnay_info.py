@@ -18,6 +18,7 @@ import re
 def process_name(name):
     name = re.sub(r"\([^)]*\)", "", name)
     name = re.sub(r"[^a-zA-Z0-9가-힣]", "", name)
+    name = re.sub(r"주식회사", "", name)
     return name
 
 
@@ -28,6 +29,7 @@ def get_jobplanet_company(name, update=False):
             .find("a")
             .text.replace("(주)", "")
         )
+        company_name = process_name(company_name)
         data_json = soup.find("ul", {"class": "basic_info_more"})
         company_info = dict()
         for data in data_json:
@@ -141,7 +143,7 @@ def get_saramin_company(name, update=False):
                 name = corp_name.find("a")
                 url = name["href"]
                 name = name.text.strip()
-
+                name = process_name(name)
                 company_pk = url.split("csn=")[-1]
                 try:
                     s = Saramin.objects.get(company_pk=company_pk)
@@ -149,7 +151,7 @@ def get_saramin_company(name, update=False):
                         print("skip")
                         continue
                     address, search_address, data = get_company_content(soup)
-                    s.name = process_name(name)
+                    s.name = name
                     s.company_pk = company_pk
                     s.address = address
                     s.data = data
@@ -158,7 +160,7 @@ def get_saramin_company(name, update=False):
                 except Saramin.DoesNotExist:
                     address, search_address, data = get_company_content(soup)
                     Saramin(
-                        name=process_name(name),
+                        name=name,
                         company_pk=company_pk,
                         address=address,
                         data=data,
@@ -204,6 +206,7 @@ def get_kreditjob_company(company, update=False):
     print(
         "---------------------------------KREDITJOB----------------------------------------"
     )
+    company = process_name(company)
     search_url = f"https://www.kreditjob.com/api/search/autocomplete"
     search_response = json.loads(
         requests.get(
@@ -213,12 +216,12 @@ def get_kreditjob_company(company, update=False):
         ).content
     )
     search_response = search_response.get("docs")
-
     for search_company in search_response:
         try:
             CMPN_NM = search_company["CMPN_NM"]
             WKP_ADRS = search_company["WKP_ADRS"]
             PK_NM_HASH = search_company["PK_NM_HASH"]
+
             try:
                 k = KreditJob.objects.get(company_pk=PK_NM_HASH)
                 if not update:
@@ -236,7 +239,6 @@ def get_kreditjob_company(company, update=False):
                 k.company_jobdam = company_jobdam
                 k.save()
             except KreditJob.DoesNotExist:
-
                 # print("-----------------기업기본정보---------------------")
                 # print(company_base_content)
                 # print("-----------------기업연봉포함정보---------------------")
@@ -251,7 +253,12 @@ def get_kreditjob_company(company, update=False):
                     _address = f"{_address[0]} {_address[1]}"
                 else:
                     _address = WKP_ADRS
-                KreditJob(
+                (
+                    company_base_content,
+                    company_info_data,
+                    company_jobdam,
+                ) = get_company_content(PK_NM_HASH)
+                KreditJob.objects.create(
                     name=process_name(CMPN_NM),
                     address=WKP_ADRS,
                     search_address=_address,
@@ -259,7 +266,8 @@ def get_kreditjob_company(company, update=False):
                     company_base_content=company_base_content,
                     company_info_data=company_info_data,
                     company_jobdam=company_jobdam,
-                ).save()
+                )
                 print(CMPN_NM, "저장")
-        except:
+        except Exception as e:
+            print(e)
             pass
