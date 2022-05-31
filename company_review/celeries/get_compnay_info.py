@@ -17,9 +17,11 @@ import re
 
 def process_name(name):
     name = re.sub(r"\([^)]*\)", "", name)
+    name = re.sub(r"（[^)]*）", "", name)
+
     name = re.sub(r"[^a-zA-Z0-9가-힣]", "", name)
     name = re.sub(r"주식회사", "", name)
-    return name
+    return name.split()
 
 
 def get_jobplanet_company(name, update=False):
