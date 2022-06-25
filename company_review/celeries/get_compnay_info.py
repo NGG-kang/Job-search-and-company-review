@@ -1,18 +1,11 @@
-from ctypes import addressof
-import os
-import sys
-import django
-from pathlib import Path
-
-# BASE_DIR = Path(__file__).resolve().parent.parent
-# sys.path.append(os.path.dirname(BASE_DIR))
-from celery import shared_task
 from crawling.models import JobPlanet, KreditJob, Saramin
 import json
 from proxy import proxies
 from bs4 import BeautifulSoup
 import requests
 import re
+from django.utils import timezone
+from datetime import datetime, timedelta
 
 
 def process_name(name):
@@ -72,8 +65,9 @@ def get_jobplanet_company(name, update=False):
                 _id = company["id"]
                 try:
                     j = JobPlanet.objects.get(company_pk=_id)
-                    if not update:
-                        print("skip")
+                    now = timezone.now()
+                    if now < (j.updated + timedelta(days=7)):
+                        print(name, "7일 지나지 않음, skip")
                         continue
                     (
                         company_name,
@@ -103,8 +97,8 @@ def get_jobplanet_company(name, update=False):
                         search_address=search_address,
                     ).save()
                     print(company_name, "저장")
-            except:
-                pass
+            except Exception as e:
+                print(e)
 
 
 def get_saramin_company(name, update=False):
@@ -149,8 +143,9 @@ def get_saramin_company(name, update=False):
                 company_pk = url.split("csn=")[-1]
                 try:
                     s = Saramin.objects.get(company_pk=company_pk)
-                    if not update:
-                        print("skip")
+                    now = timezone.now()
+                    if now < (s.updated + timedelta(days=7)):
+                        print(name, "7일 지나지 않음, skip")
                         continue
                     address, search_address, data = get_company_content(soup)
                     s.name = name
@@ -226,8 +221,9 @@ def get_kreditjob_company(company, update=False):
 
             try:
                 k = KreditJob.objects.get(company_pk=PK_NM_HASH)
-                if not update:
-                    print("skip")
+                now = timezone.now()
+                if now < (k.updated + timedelta(days=7)):
+                    print(CMPN_NM, "7일 지나지 않음, skip")
                     continue
                 (
                     company_base_content,
