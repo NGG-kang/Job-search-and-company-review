@@ -38,7 +38,7 @@
                   {% for obj in i.objs.2 %}
                       <br>
                       이름 : {{obj.name}} <br>
-                      링크 : <a href="https://www.kreditjob.com/company/{{i.objs.2.company_pk}}">{{obj.company_pk}}</a> <br>
+                      링크 : <a href="https://www.kreditjob.com/company/{{obj.company_pk}}/">{{obj.company_pk}}</a> <br>
                       기업정보 :
                       소재지 : {{obj.company_info_data.companyInfoData.WKP_ADRS}} <br>
                       인원수 : {{obj.company_info_data.companyInfoData.PRSN_BASE}}명 <br>
