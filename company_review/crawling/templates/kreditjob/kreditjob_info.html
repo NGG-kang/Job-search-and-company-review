@@ -1,0 +1,24 @@
+<br>
+이름 : {{ obj.name }} <br>
+링크 :
+<a href="https://www.kreditjob.com/company/{{ obj.company_pk }}/">{{ obj.company_pk }}</a>
+<br>
+기업정보 :
+소재지 : {{ obj.company_base_content.company_info.location }} <br>
+인원수 : {{ obj.company_base_content.company_summary.employee.total }}명 <br>
+고용 : {{ obj.company_base_content.company_summary.employee.hired }}명 <br>
+퇴사 : {{ obj.company_base_content.company_summary.employee.left }}명 <br>
+업력 : {{ obj.company_info_data.companyInfoData.COMPANY_AGE }}년 <br>
+데이터 기록 시간 : {{ obj.company_info_data.companyInfoData.DATA_YM_MAX }} <br>
+기업 데이터 공개여부 : {{ obj.company_base_content.company_status }} <br>
+
+잡담 : <br/>
+
+{% if obj.company_jobdam %}
+    {% for k in obj.company_jobdam.board %}
+        <a href="https://www.kreditjob.com/board/{{ k.JOBDOM_NO }}">{{ k.TITLE }}</a>
+        <br>
+    {% endfor %}
+{% else %}
+    잡담 없음
+{% endif %}

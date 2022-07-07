@@ -1,190 +1,88 @@
 {% load utils %}
 <h2 class="mb-4">검색 결과</h2>
 <div class="accordion" id="search_results">
-  {% if context %}
-      {% for i in context %}
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="heading{{forloop.counter}}">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#data{{forloop.counter}}" aria-expanded="false" aria-controls="data{{forloop.counter}}">
-            ({{i.site}}) {{ i.name }}: {{ i.title }} {{ i.deadlines }}
-          </button>
-        </h2>
-        <div id="data{{forloop.counter}}" class="accordion-collapse collapse" aria-labelledby="heading{{forloop.counter}}" data-bs-parent="#accordionExample">
-          {% comment %} 공고 정보 {% endcomment %}
-          <div class="accordion-body">
-            <a href={{ i.url }}>{{i.url}}</a>
-          </div>
-          <div class="accordion-body">
-            경력: {{i.career}}
-          </div>
-          <div class="accordion-body">
-            교육: {{i.education}}
-          </div>
-          <div class="accordion-body">
-            구인 유형: {{i.employment_type}}
-          </div>
-          <div class="accordion-body">
-            지역: {{i.work_place}}
-          </div>
-          
+    {% if context %}
+        {% for i in context %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#data{{ forloop.counter }}" aria-expanded="false"
+                            aria-controls="data{{ forloop.counter }}">
+                        ({{ i.site }}) {{ i.name }}: {{ i.title }} {{ i.deadlines }}
+                    </button>
+                </h2>
+                <div id="data{{ forloop.counter }}" class="accordion-collapse collapse"
+                     aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionExample">
+                    {% comment %} 공고 정보 {% endcomment %}
+                    <div class="accordion-body">
+                        <a href={{ i.url }}>{{ i.url }}</a>
+                    </div>
+                    <div class="accordion-body">
+                        경력: {{ i.career }}
+                    </div>
+                    <div class="accordion-body">
+                        교육: {{ i.education }}
+                    </div>
+                    <div class="accordion-body">
+                        구인 유형: {{ i.employment_type }}
+                    </div>
+                    <div class="accordion-body">
+                        지역: {{ i.work_place }}
+                    </div>
 
-          {% comment %} KreditJob {% endcomment %}
-          <div class="accordion-body">
-            KreditJob
-          {% if i.objs.2 %}
-              {% if i.objs.2|get_type == 'list' %}
-                  기업 매칭 실패, 이름이 같은 기업을 모두 불러옵니다.
-                  <br>
-                  {% for obj in i.objs.2 %}
-                      <br>
-                      이름 : {{obj.name}} <br>
-                      링크 : <a href="https://www.kreditjob.com/company/{{obj.company_pk}}/">{{obj.company_pk}}</a> <br>
-                      기업정보 :
-                      소재지 : {{obj.company_info_data.companyInfoData.WKP_ADRS}} <br>
-                      인원수 : {{obj.company_info_data.companyInfoData.PRSN_BASE}}명 <br>
-                      업력 : {{obj.company_info_data.companyInfoData.COMPANY_AGE}}년 <br>
-                      데이터 기록 시간 : {{obj.company_info_data.companyInfoData.DATA_YM_MAX}} <br>
-                      잡담 : <br/>
+                    {% include "jobplanet.html" %}
+                    {% include "kreditjob/kreditjob.html" %}
+                    {% include "saramin.html" %}
 
-                      {% if obj.company_jobdam %}
-                        {% for k in obj.company_jobdam.board %}
-                          <a href="https://www.kreditjob.com/board/{{k.JOBDOM_NO}}">{{ k.TITLE }}</a> <br>
-                        {% endfor %}
-                      {% else %}
-                      잡담 없음
-                      {% endif %}
-                  {% endfor %}
-              {% else %}
-                  <br>
-                  이름 : {{i.objs.2.name}} <br>
-                  링크 : <a href="https://www.kreditjob.com/company/{{i.objs.2.company_pk}}">{{i.objs.2.company_pk}}</a> <br>
-                  기업정보 :
-                  소재지 : {{i.objs.2.company_info_data.companyInfoData.WKP_ADRS}} <br>
-                  인원수 : {{i.objs.2.company_info_data.companyInfoData.PRSN_BASE}}명 <br>
-                  업력 : {{i.objs.2.company_info_data.companyInfoData.COMPANY_AGE}}년 <br>
-                  데이터 기록 시간 : {{i.objs.2.company_info_data.companyInfoData.DATA_YM_MAX}} <br>
-                  잡담 : <br/>
 
-                  {% if i.objs.2.company_jobdam %}
-                    {% for k in i.objs.2.company_jobdam.board %}
-                      <a href="https://www.kreditjob.com/board/{{k.JOBDOM_NO}}">{{ k.TITLE }}</a> <br>
-                    {% endfor %}
-                  {% else %}
-                  잡담 없음
-                  {% endif %}
-              {% endif %}
-          {% else %}
-               : 매칭 없음
-            <br/>
-          {% endif %}
-          </div>
-
-          {% comment %} Saramin {% endcomment %}
-          <div class="accordion-body">
-            Saramin: 
-          {% if i.objs.0 %}
-              {% if i.objs.0|get_type == 'list' %}
-                  기업 매칭 실패, 이름이 같은 기업을 모두 불러옵니다.
-                  <br>
-                  {% for obj in i.objs.0 %}
-                      이름 : {{obj.name}} <br>
-                      링크 : <a href="https://www.saramin.co.kr/zf_user/company-info/view?csn={{obj.company_pk}}">{{obj.company_pk}}</a> <br>
-                      {% for key, value in obj.data.items %}
-                        {{key}} : {{value}}<br/>
-                      {% endfor %}
-                  {% endfor %}
-              {% else %}
-                  <br/>
-                  이름 : {{i.objs.0.name}} <br>
-                  링크 : <a href="https://www.saramin.co.kr/zf_user/company-info/view?csn={{i.objs.0.company_pk}}">{{i.objs.0.company_pk}}</a> <br>
-                  {% for key, value in i.objs.0.data.items %}
-                    {{key}} : {{value}}<br/>
-                  {% endfor %}
-              {% endif %}
-          {% else %}
-            매칭 없음
-            <br/>
-          {% endif %}
-          </div>
-
-          {% comment %} JobPlanet {% endcomment %}
-          <div class="accordion-body">
-            JobPlanet : 
-          {% if i.objs.1 %}
-              {% if i.objs.1|get_type == 'list' %}
-                  기업 매칭 실패, 이름이 같은 기업을 모두 불러옵니다.
-                  <br>
-                  {% for obj in i.objs.1 %}
-                    <br>
-                    이름 : {{obj.name}} <br/>
-                    링크 : <a href="https://www.jobplanet.co.kr/companies/{{obj.company_pk}}/">{{obj.company_pk}}</a> <br/>
-                    {% for key, value in obj.data.items %}
-                    {{key}} : {{value}}<br/>
-                    {% endfor%}
-                  {% endfor %}
-              {% else %}
-                  <br>
-                    이름 : {{i.objs.1.name}} <br/>
-                    링크 : <a href="https://www.jobplanet.co.kr/companies/{{i.objs.1.company_pk}}/">{{i.objs.1.company_pk}}</a> <br/>
-                    {% for key, value in i.objs.1.data.items %}
-                    {{key}} : {{value}}<br/>
-                    {% endfor%}
-              {% endif %}
-          {% else %}
-              매칭 없음
-            <br/>
-          {% endif %}
-          </div>
-          <form hx-post="{% url 'update_company' %}" hx-trigger="click"
-          hx-swap="none">
-            <input name="company" type="hidden" value={{ i.name }}>
-            <button class="btn btn-primary" type="submit" id="liveToastBtn{{forloop.counter}}">정보 업데이트 요청</button>
-        </form>
+                    <form hx-post="{% url 'update_company' %}" hx-trigger="click"
+                          hx-swap="none">
+                        <input name="company" type="hidden" value={{ i.name }}>
+                        <button class="btn btn-primary" type="submit" id="liveToastBtn{{ forloop.counter }}">정보 업데이트
+                            요청
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    {% elif data == True %}
+        <div>
+            {{ request.GET.q }} 데이터 수집중입니다. 5분 뒤에 다시 검색해주세요
         </div>
-      </div>
-      {% endfor %}
-  {% elif data == True %}
-  <div>
-    {{ request.GET.q }} 데이터 수집중입니다. 5분 뒤에 다시 검색해주세요
-  </div>
-  {% elif data == False %}
-  <div>
-    {{ request.GET.q }} 데이터 수집중이 아닙니다.
-      <form hx-post="{% url 'add-search-info' %}" hx-trigger="click" 
-      hx-swap="none">
-        <input name="company" type="hidden" value={{ request.GET.q }}>
-        <button class="btn btn-primary" type="submit" id="liveToastBtn_crawling">{{request.GET.q}} 크롤링 요청</button>
-    </form>
-    </div>
-  {% else %}
-  <form hx-post="{% url 'add-search-info' %}" hx-trigger="click"
-    hx-swap="none">
-      <input name="company" type="hidden" value={{ request.GET.q }}>
-      <button class="btn btn-primary" type="submit">{{request.GET.q}} 크롤링 요청</button>
-  </form>
-  {% endif %}
+    {% elif data == False %}
+        <div>
+            {{ request.GET.q }} 데이터 수집중이 아닙니다.
+            <form hx-post="{% url 'add-search-info' %}" hx-trigger="click"
+                  hx-swap="none">
+                <input name="company" type="hidden" value={{ request.GET.q }}>
+                <button class="btn btn-primary" type="submit" id="liveToastBtn_crawling">{{ request.GET.q }} 크롤링 요청
+                </button>
+            </form>
+        </div>
+    {% else %}
+        <form hx-post="{% url 'add-search-info' %}" hx-trigger="click"
+              hx-swap="none">
+            <input name="company" type="hidden" value={{ request.GET.q }}>
+            <button class="btn btn-primary" type="submit">{{ request.GET.q }} 크롤링 요청</button>
+        </form>
+    {% endif %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
 </div>
 
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header", id="toast-header">
-      <strong class="me-auto">요청 성공</strong>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header" , id="toast-header">
+            <strong class="me-auto">요청 성공</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            요청이 완료되었습니다. 5분 뒤에 다시 확인해주세요
+        </div>
     </div>
-    <div class="toast-body">
-      요청이 완료되었습니다. 5분 뒤에 다시 확인해주세요
-    </div>
-  </div>
 </div>
-
-<script>
-  var toastTrigger = document.querySelector('[id^="liveToastBtn"]');
-  var toastLiveExample = document.getElementById('liveToast')
-  if (toastTrigger) {
-    toastTrigger.addEventListener('click', function () {
-      var toast = new bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-      toast.hide()
-      toast.show()
-    })
-  }
-</script>

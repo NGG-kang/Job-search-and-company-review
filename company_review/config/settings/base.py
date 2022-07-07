@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     "crawling",
     "django_json_widget",
     "django_htmx",
-    "django_celery_results",
     "django_celery_beat",
     "crispy_forms",
 ]
@@ -154,5 +153,5 @@ CACHES = {
     }
 }
 
-CELERY_RESULT_BACKEND = "django-db"
+# CELERY_RESULT_BACKEND = "django-db"
 CELERY_CACHE_BACKEND = "django-cache"

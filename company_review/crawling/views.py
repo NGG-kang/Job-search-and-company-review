@@ -4,6 +4,7 @@ from .models import KreditJob, JobPlanet, Saramin
 from celeries.celery import get_company_info
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from django.core.cache import cache
+from django.contrib import messages
 
 
 def search_result(request, **kwargs):
@@ -53,6 +54,8 @@ def add_search_cron_beat(request):
         if request.POST:
             try:
                 company = request.POST.get("company")
+                if not company:
+                    return HttpResponseBadRequest("Need company data")
                 interval = IntervalSchedule.objects.get(id=1)
                 PeriodicTask.objects.create(
                     name=company,
@@ -61,7 +64,8 @@ def add_search_cron_beat(request):
                     interval=interval,
                     args=f'["{company}", "True"]'
                 )
-                return JsonResponse({"message": "success"})
+                messages.add_message(request, messages.INFO, 'Hello world.')
+                return render(request=request, template_name="result.html")
             except Exception:
                 return HttpResponseBadRequest("Already save company")
     return HttpResponseBadRequest("using method post")

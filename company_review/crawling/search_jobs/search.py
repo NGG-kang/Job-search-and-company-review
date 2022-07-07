@@ -17,6 +17,7 @@ def search_and_save_row(q, celery=False):
     saramin = get_saramin_search(q)
     jobkorea = get_jobkorea_search(q)
     all_jobs = list(chain(saramin, jobkorea))
+    print(all_jobs)
     if celery:
         names = [i["name"] for i in list(chain(saramin, jobkorea))]
         s = Saramin.objects.filter(name__in=names).only("name", "search_address", "company_pk", "data")
@@ -52,7 +53,7 @@ def search_and_save_row(q, celery=False):
                 "name",
                 "search_address",
                 "company_pk",
-                # "company_base_content",
+                "company_base_content",
                 "company_info_data",
                 "company_jobdam",
             )
@@ -74,7 +75,6 @@ def search_and_save_row(q, celery=False):
             company_info_list.append(get_company_info_dict(job, kreditjob_object))
             job["objs"] = company_info_list
         cache.set(q, all_jobs, None)
-        # SearchResult.objects.update_or_create(search_q=q, data=all_jobs)
 
     return all_jobs
 

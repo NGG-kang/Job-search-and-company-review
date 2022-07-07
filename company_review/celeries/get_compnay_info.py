@@ -96,7 +96,7 @@ def get_jobplanet_company(name, update=False):
                         address=address,
                         search_address=search_address,
                     ).save()
-                    print(company_name, "저장")
+                    print("jobplanet", company_name, "저장")
             except Exception as e:
                 print(e)
 
@@ -163,7 +163,7 @@ def get_saramin_company(name, update=False):
                         data=data,
                         search_address=search_address,
                     ).save()
-                    print(name, "저장")
+                    print("saramin", name, "저장")
             except:
                 pass
         page += 1
@@ -171,12 +171,46 @@ def get_saramin_company(name, update=False):
 
 def get_kreditjob_company(company, update=False):
     def get_company_content(PK_NM_HASH):
-        company_base_content = json.loads(
+        company_info = json.loads(
             requests.get(
-                f"https://www.wanted.co.kr/api/v1/company_briefs?kreditjob_pk={PK_NM_HASH}",
+                f"https://www.kreditjob.com/api/company/{PK_NM_HASH}/info",
                 proxies=proxies,
             ).content
         )
+        company_summary = json.loads(
+            requests.get(
+                f"https://www.kreditjob.com/api/company/{PK_NM_HASH}/summary",
+                proxies=proxies,
+            ).content
+        )
+        company_salaries = json.loads(
+            requests.get(
+                f"https://www.kreditjob.com/api/company/{PK_NM_HASH}/salaries",
+                proxies=proxies,
+            ).content
+        )
+        company_employee = json.loads(
+            requests.get(
+                f"https://www.kreditjob.com/api/company/{PK_NM_HASH}/employee",
+                proxies=proxies,
+            ).content
+        )
+        company_status = json.loads(
+            requests.get(
+                f"https://www.kreditjob.com/api/company/{PK_NM_HASH}/states",
+                proxies=proxies,
+            ).content
+        )
+
+        # new 크레딧잡 정보들
+        company_base_content = {
+            "company_info": company_info,
+            "company_summary": company_summary,
+            "company_salaries": company_salaries,
+            "company_employee": company_employee,
+            "company_status": company_status
+        }
+
         # POST
         # 기업 연봉포함 정보
         # data
@@ -237,12 +271,7 @@ def get_kreditjob_company(company, update=False):
                 k.company_jobdam = company_jobdam
                 k.save()
             except KreditJob.DoesNotExist:
-                # print("-----------------기업기본정보---------------------")
-                # print(company_base_content)
-                # print("-----------------기업연봉포함정보---------------------")
-                # print(company_info_data)
-                # print("-----------------기업잡담---------------------")
-                # print(company_jobdam)
+
 
                 _address = WKP_ADRS.split(" ")
                 if len(_address) >= 2:
@@ -265,7 +294,7 @@ def get_kreditjob_company(company, update=False):
                     company_info_data=company_info_data,
                     company_jobdam=company_jobdam,
                 )
-                print(CMPN_NM, "저장")
+                print("kreditjob", CMPN_NM, "저장")
         except Exception as e:
             print(e)
             pass

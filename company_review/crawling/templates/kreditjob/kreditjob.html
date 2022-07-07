@@ -1,0 +1,20 @@
+{% load utils %}
+<div class="accordion-body">
+    KreditJob
+    {% if i.objs.2 %}
+        {% if i.objs.2|get_type == 'list' %}
+            기업 매칭 실패, 이름이 같은 기업을 모두 불러옵니다.
+            <br>
+            {% for obj in i.objs.2 %}
+                {% include "kreditjob/kreditjob_info.html" %}
+            {% endfor %}
+        {% else %}
+            {% with obj=i.objs.2 %}
+            {% include "kreditjob/kreditjob_info.html" %}
+            {% endwith %}
+        {% endif %}
+    {% else %}
+        : 매칭 없음
+        <br/>
+    {% endif %}
+</div>

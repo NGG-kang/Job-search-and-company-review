@@ -19,9 +19,9 @@ def get_saramin_search(name):
     # 1: 신입 2: 경력
     exp_cd = "exp_cd=1"
     # 년도 최소, 신입은 없음
-    # exp_min = "exp_min=1"
+    exp_min = "exp_min=1"
     # 년도 맥시멈
-    # exp_max = "exp_max=1"
+    exp_max = "exp_max=1"
     return_list = []
     if exp_cd == "exp_cd=1":
         exp_min = ""
