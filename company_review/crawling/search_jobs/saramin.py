@@ -66,7 +66,10 @@ def get_saramin_search(name):
             education = recruit_condition.find("p", class_="education").text
             # 근무조건
             company_info = company.find("div", {"class": "col company_info"})
-            employment_type = company_info.find("p", class_="employment_type").text
+            try:
+                employment_type = company_info.find("p", class_="employment_type").text
+            except:
+                employment_type = "없음"
             work_place = company_info.find("p", class_="work_place").text
             if work_place:
                 _work_place = work_place.split(" ")
