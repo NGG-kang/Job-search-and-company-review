@@ -140,5 +140,5 @@ GitHub.sublime-settings
 secrets/
 rootkey.csv
 staticfiles/
-static/
+# static/
 .idea/
