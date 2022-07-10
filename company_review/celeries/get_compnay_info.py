@@ -213,15 +213,17 @@ def get_kreditjob_company(company, update=False):
 
         # POST
         # 기업 연봉포함 정보
+        # 너무 옛날 정보들 포함이라 미적용
         # data
         data = {"PK_NM_HASH": PK_NM_HASH}
-        company_info_data = json.loads(
-            requests.post(
-                "https://www.kreditjob.com/api/company/companyPage",
-                data=data,
-                proxies=proxies,
-            ).content
-        )
+        company_info_data = ""
+        # company_info_data = json.loads(
+        #     requests.post(
+        #         "https://www.kreditjob.com/api/company/companyPage",
+        #         data=data,
+        #         proxies=proxies,
+        #     ).content
+        # )
         # POST
         # 기업 잡담
         data = {"PK_NM_HASH": ["PK_NM_HASH", PK_NM_HASH]}
