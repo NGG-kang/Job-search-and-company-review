@@ -33,7 +33,7 @@ def get_jobkorea_search(stext):
     return_list = []
     while True:
         if Page_No == 3:
-            return return_list
+            return return_list, len(return_list)
         headers = Headers(os="mac", headers=True).generate()
         url = f"https://www.jobkorea.co.kr/Search/?stext={stext}&{local}&{careerType}&{careerMin}&{careerMax}&{Ord}&Page_No={str(Page_No)}"
         print(url)
@@ -45,7 +45,7 @@ def get_jobkorea_search(stext):
         try:
             search_list = search_list.find_all("li", {"class": "list-post"})
         except AttributeError:
-            return return_list
+            return return_list, len(return_list)
         for company in search_list:
             # 기업 이름
             company_nm = company.find("div", {"class": "post-list-corp"})

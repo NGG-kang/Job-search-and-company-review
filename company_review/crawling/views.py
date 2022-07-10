@@ -5,6 +5,7 @@ from celeries.celery import get_company_info
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from django.core.cache import cache
 from django.contrib import messages
+import traceback
 
 
 def search_result(request, **kwargs):
@@ -56,7 +57,7 @@ def add_search_cron_beat(request):
                 company = request.POST.get("company")
                 if not company:
                     return HttpResponseBadRequest("Need company data")
-                interval = IntervalSchedule.objects.get(id=1)
+                interval = IntervalSchedule.objects.get_or_create(every=1, period='minutes')[0]
                 PeriodicTask.objects.create(
                     name=company,
                     task="crawling.search_jobs.search.search_and_save",
@@ -66,6 +67,8 @@ def add_search_cron_beat(request):
                 )
                 messages.add_message(request, messages.INFO, 'Hello world.')
                 return render(request=request, template_name="result.html")
-            except Exception:
+            except Exception as e:
+                print(traceback.print_exc())
+                print(e)
                 return HttpResponseBadRequest("Already save company")
     return HttpResponseBadRequest("using method post")

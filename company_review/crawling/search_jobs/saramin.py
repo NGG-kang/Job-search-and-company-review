@@ -92,4 +92,4 @@ def get_saramin_search(name):
             return_list.append(data)
         page += 1
         
-        return return_list
+        return return_list, len(return_list)

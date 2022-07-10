@@ -2,62 +2,59 @@
 <h2 class="mb-4">검색 결과</h2>
 <div class="accordion" id="search_results">
     {% if context %}
-        {% for i in context %}
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading{{ forloop.counter }}">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#data{{ forloop.counter }}" aria-expanded="false"
-                            aria-controls="data{{ forloop.counter }}">
-                        ({{ i.site }}) {{ i.name }}: {{ i.title }} {{ i.deadlines }}
-                    </button>
-                </h2>
-                <div id="data{{ forloop.counter }}" class="accordion-collapse collapse"
-                     aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionExample">
-                    {% comment %} 공고 정보 {% endcomment %}
-                    <div class="accordion-body">
-                        <a href={{ i.url }}>{{ i.url }}</a>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading-saramin">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#data-saramin" aria-expanded="false"
+                        aria-controls="data-saramin">
+                    사람인 공고
+                </button>
+                <div aria-labelledby="data-saramin" class="accordion-collapse collapse show" id="data-saramin">
+                    <div class="accordion" id="saramin-info">
+                        {% for i in context.saramin %}
+                            {% include 'result_jobs.html' %}
+                        {% endfor %}
                     </div>
-                    <div class="accordion-body">
-                        경력: {{ i.career }}
-                    </div>
-                    <div class="accordion-body">
-                        교육: {{ i.education }}
-                    </div>
-                    <div class="accordion-body">
-                        구인 유형: {{ i.employment_type }}
-                    </div>
-                    <div class="accordion-body">
-                        지역: {{ i.work_place }}
-                    </div>
-
-                    {% include "jobplanet.html" %}
-                    {% include "kreditjob/kreditjob.html" %}
-                    {% include "saramin.html" %}
-
-
-                    <form hx-post="{% url 'update_company' %}" hx-trigger="click"
-                          hx-swap="none">
-                        <input name="company" type="hidden" value={{ i.name }}>
-                        <button class="btn btn-primary" type="submit" id="liveToastBtn{{ forloop.counter }}">정보 업데이트
-                            요청
-                        </button>
-                    </form>
                 </div>
-            </div>
-        {% endfor %}
+            </h2>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading-jobkorea">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#data-jobkorea" aria-expanded="false"
+                        aria-controls="data-jobkorea">
+                    잡코리아
+                </button>
+
+                <div aria-labelledby="data-jobkorea" class="accordion-collapse collapse show" id="data-jobkorea">
+                    <div class="accordion" id="jobkorea-info">
+                        {% for i in context.jobkorea %}
+                            {% include 'result_jobs.html' %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </h2>
+        </div>
+
     {% elif data == True %}
         <div>
             {{ request.GET.q }} 데이터 수집중입니다. 5분 뒤에 다시 검색해주세요
         </div>
     {% elif data == False %}
         <div>
-            {{ request.GET.q }} 데이터 수집중이 아닙니다.
-            <form hx-post="{% url 'add-search-info' %}" hx-trigger="click"
-                  hx-swap="none">
-                <input name="company" type="hidden" value={{ request.GET.q }}>
-                <button class="btn btn-primary" type="submit" id="liveToastBtn_crawling">{{ request.GET.q }} 크롤링 요청
-                </button>
-            </form>
+            {% if request.GET.q %}
+                {{ request.GET.q }} 데이터 수집중이 아닙니다.
+                <form hx-post="{% url 'add-search-info' %}" hx-trigger="click"
+                      hx-swap="none">
+                    <input name="company" type="hidden" value={{ request.GET.q }}>
+                    <button class="btn btn-primary" type="submit" id="liveToastBtn_crawling">{{ request.GET.q }} 크롤링 요청
+                    </button>
+                </form>
+            {% else %}
+                <div>
+                    작동중인 공고 정보 검색 및 공고 추가는 검색 후에 가능합니다.
+                </div>
+            {% endif %}
         </div>
     {% else %}
         <form hx-post="{% url 'add-search-info' %}" hx-trigger="click"
@@ -65,14 +62,15 @@
             <input name="company" type="hidden" value={{ request.GET.q }}>
             <button class="btn btn-primary" type="submit">{{ request.GET.q }} 크롤링 요청</button>
         </form>
+
     {% endif %}
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 </div>
 
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">

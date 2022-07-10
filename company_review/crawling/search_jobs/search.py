@@ -14,10 +14,9 @@ from django.core.cache import cache
 
 
 def search_and_save_row(q, celery=False):
-    saramin = get_saramin_search(q)
-    jobkorea = get_jobkorea_search(q)
+    saramin, saramin_length = get_saramin_search(q)
+    jobkorea, jobkorea_length = get_jobkorea_search(q)
     all_jobs = list(chain(saramin, jobkorea))
-    print(all_jobs)
     if celery:
         names = [i["name"] for i in list(chain(saramin, jobkorea))]
         s = Saramin.objects.filter(name__in=names).only("name", "search_address", "company_pk", "data")
@@ -26,7 +25,7 @@ def search_and_save_row(q, celery=False):
                 "search_address",
                 "company_pk",
                 "company_base_content",
-                "company_info_data",
+                # "company_info_data",
                 "company_jobdam",
             )
         j = JobPlanet.objects.filter(name__in=names).only("name", "search_address", "company_pk", "data")
@@ -54,7 +53,7 @@ def search_and_save_row(q, celery=False):
                 "search_address",
                 "company_pk",
                 "company_base_content",
-                "company_info_data",
+                # "company_info_data",
                 "company_jobdam",
             )
         )
@@ -67,15 +66,22 @@ def search_and_save_row(q, celery=False):
                 return [val for val in value_dict[job["name"]]]
             else:
                 return None
-
-        for job in all_jobs:
+        saramin_list = list()
+        jobkorea_list = list()
+        for index, job in enumerate(all_jobs):
             company_info_list = list()
             company_info_list.append(get_company_info_dict(job, saramin_object))
             company_info_list.append(get_company_info_dict(job, jobplanet_object))
             company_info_list.append(get_company_info_dict(job, kreditjob_object))
             job["objs"] = company_info_list
+            if index < saramin_length:
+                saramin_list.append(job)
+                continue
+            if index < saramin_length + jobkorea_length:
+                jobkorea_list.append(job)
+                continue
+        all_jobs = {'saramin': saramin_list, 'jobkorea': jobkorea_list}
         cache.set(q, all_jobs, None)
-
     return all_jobs
 
 
