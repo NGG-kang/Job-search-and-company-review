@@ -4,10 +4,10 @@ services:
   web:
     build:
       context: ./company_review
-      dockerfile: ./Dockerfile/Dockerfile.dev
+      dockerfile: Dockerfile/Dockerfile.dev
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./:/usr/src/
+      - ./company_review:/usr/src/company_review
     ports:
       - 8000:8000
     environment:
