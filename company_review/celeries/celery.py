@@ -36,6 +36,7 @@ def setup_periodic_tasks(sender, **kwrags):
 
 @app.task(bind=True)
 def get_company_info(self, name, update=False):
+    print("시작: " + name)
     get_jobplanet_company(name, update)
     get_saramin_company(name, update)
     get_kreditjob_company(name, update)

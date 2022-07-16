@@ -66,6 +66,7 @@ def search_and_save_row(q, celery=False):
                 return [val for val in value_dict[job["name"]]]
             else:
                 return None
+
         saramin_list = list()
         jobkorea_list = list()
         for index, job in enumerate(all_jobs):

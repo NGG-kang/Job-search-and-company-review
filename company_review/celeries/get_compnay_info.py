@@ -1,11 +1,13 @@
-from crawling.models import JobPlanet, KreditJob, Saramin
 import json
-from proxy import proxies
-from bs4 import BeautifulSoup
-import requests
 import re
+import traceback
+from datetime import timedelta
+
+import requests
+from bs4 import BeautifulSoup
+from crawling.models import JobPlanet, KreditJob, Saramin
 from django.utils import timezone
-from datetime import datetime, timedelta
+from proxy import proxies
 
 
 def process_name(name):
@@ -98,14 +100,21 @@ def get_jobplanet_company(name, update=False):
                     ).save()
                     print("jobplanet", company_name, "저장")
             except Exception as e:
-                print(e)
+                print(search_url)
+                print(traceback.print_exc())
 
 
 def get_saramin_company(name, update=False):
     def get_company_content(soup):
         data = {}
         corp_info = soup.find("div", class_="corp_info")
+        if not corp_info:
+            address = ""
+            _address = ""
+            data = {}
+            return address, _address, data
         data_list = corp_info.find_all("dl")
+        
         address = ""
         _address = ""
         for val in data_list:
@@ -125,8 +134,9 @@ def get_saramin_company(name, update=False):
 
     page = 1
     while True:
+        search_url = f"https://www.saramin.co.kr/zf_user/search/company?searchword={name}&page={page}"
         resq = requests.get(
-            f"https://www.saramin.co.kr/zf_user/search/company?searchword={name}&page={page}",
+            search_url,
             proxies=proxies,
         )
         soup = BeautifulSoup(resq.content, "lxml")
@@ -165,7 +175,8 @@ def get_saramin_company(name, update=False):
                     ).save()
                     print("saramin", name, "저장")
             except:
-                pass
+                print(search_url)
+                print(traceback.print_exc())
         page += 1
 
 
@@ -239,7 +250,9 @@ def get_kreditjob_company(company, update=False):
     print(
         "---------------------------------KREDITJOB----------------------------------------"
     )
+    print(company +  "1 크레딧잡")
     company = process_name(company)
+    print(company +  "2 크레딧잡")
     search_url = f"https://www.kreditjob.com/api/search/autocomplete"
     search_response = json.loads(
         requests.get(
@@ -273,8 +286,6 @@ def get_kreditjob_company(company, update=False):
                 k.company_jobdam = company_jobdam
                 k.save()
             except KreditJob.DoesNotExist:
-
-
                 _address = WKP_ADRS.split(" ")
                 if len(_address) >= 2:
                     _address[0] = _address[0].replace("광역시", "")
@@ -298,5 +309,5 @@ def get_kreditjob_company(company, update=False):
                 )
                 print("kreditjob", CMPN_NM, "저장")
         except Exception as e:
-            print(e)
-            pass
+            print("크레딧잡 에러")
+            print(traceback.print_exc())

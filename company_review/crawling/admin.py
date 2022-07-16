@@ -35,7 +35,7 @@ class CachingPaginator(Paginator):
 @admin.register(JobPlanet)
 class JobPlanetAdmin(admin.ModelAdmin):
     list_display = ("name", "company_pk", "address", "search_address", "created", "updated")
-    search_fields = ["search_address", "company_pk", "name"]
+    search_fields = ["name"]
     show_full_result_count = False
     paginator = CachingPaginator
 
@@ -60,7 +60,7 @@ class OnlyJobdamFilter(admin.SimpleListFilter):
 @admin.register(KreditJob)
 class KreditJobAdmin(admin.ModelAdmin):
     list_filter = (OnlyJobdamFilter,)
-    search_fields = ["search_address", "company_pk", "name"]
+    search_fields = ["name"]
     show_full_result_count = False
     paginator = CachingPaginator
     list_display = (
@@ -103,7 +103,7 @@ class SaraminAdmin(admin.ModelAdmin):
     )
     show_full_result_count = False
     paginator = CachingPaginator
-    search_fields = ["search_address", "company_pk", "name"]
+    search_fields = ["name"]
 
 
 @admin.register(SearchResult)
