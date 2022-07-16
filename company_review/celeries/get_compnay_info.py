@@ -250,9 +250,7 @@ def get_kreditjob_company(company, update=False):
     print(
         "---------------------------------KREDITJOB----------------------------------------"
     )
-    print(company +  "1 크레딧잡")
     company = process_name(company)
-    print(company +  "2 크레딧잡")
     search_url = f"https://www.kreditjob.com/api/search/autocomplete"
     search_response = json.loads(
         requests.get(

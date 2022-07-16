@@ -4,11 +4,7 @@ import re
 from proxy import proxies
 from crawling.models import Saramin
 from traceback import print_exc
-from celeries.get_compnay_info import (
-    get_kreditjob_company,
-    get_saramin_company,
-    get_jobplanet_company,
-)
+from celeries.tasks import get_company_info
 
 
 def get_saramin_search(name):
@@ -92,9 +88,7 @@ def get_saramin_search(name):
                     "deadlines": deadlines,
                 }
                 return_list.append(data)
-                get_jobplanet_company(company_name, True)
-                get_saramin_company(company_name, True)
-                get_kreditjob_company(company_name, True)
+                get_company_info.delay(company_name,True)
             page += 1
             
             return return_list, len(return_list)

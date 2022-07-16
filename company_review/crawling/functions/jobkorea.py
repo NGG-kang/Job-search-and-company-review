@@ -63,14 +63,11 @@ def get_jobkorea_company(name):
                 if "주소" in datas:
                     address = datas["주소"]
                 data = {**data, **datas}
-            print(data)
-            print(address)
             search_address = address.split(" ")
             if len(search_address) >= 2:
                 search_address = f"{search_address[0]} {search_address[1]}"
             else:
                 search_address = address
-            print(search_address)
             # JobKorea(
             #     name=name,
             #     company_pk=company_pk,

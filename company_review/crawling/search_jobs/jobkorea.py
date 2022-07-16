@@ -11,12 +11,7 @@ sys.path.append(os.path.dirname(BASE_DIR))
 from proxy import proxies
 import re
 from traceback import print_exc
-from celeries.get_compnay_info import (
-    get_kreditjob_company,
-    get_saramin_company,
-    get_jobplanet_company,
-)
-
+from celeries.tasks import get_company_info
 
 def get_jobkorea_search(stext):
     # 검색어
@@ -91,9 +86,7 @@ def get_jobkorea_search(stext):
                     "work_place": location,
                     "deadlines": deadlines,
                 }
-                get_jobplanet_company(name, True)
-                get_saramin_company(name, True)
-                get_kreditjob_company(name, True)
+                get_company_info.delay(name, True)
                 return_list.append(data)
             Page_No += 1
     except:

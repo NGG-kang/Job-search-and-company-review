@@ -55,5 +55,4 @@ def get_company_info_update(self):
         k = list(k)
         cache.set("company_list", k, None)
     for name in company_list:
-        print(name)
         get_company_info.delay(name, True)
