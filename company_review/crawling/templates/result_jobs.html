@@ -1,41 +1,47 @@
 <div class="accordion-item">
-    <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+    <div class="accordion-header" id="heading{{ forloop.counter }}">
         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                 data-bs-target="#data{{ forloop.counter }}" aria-expanded="false"
                 aria-controls="data{{ forloop.counter }}">
             ({{ i.site }}) {{ i.name }}: {{ i.title }} {{ i.deadlines }}
         </button>
-    </h2>
-    <div id="data{{ forloop.counter }}" class="accordion-collapse collapse"
-         aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionExample">
-        {% comment %} 공고 정보 {% endcomment %}
-        <div class="accordion-body">
-            <a href={{ i.url }}>{{ i.url }}</a>
-        </div>
-        <div class="accordion-body">
-            경력: {{ i.career }}
-        </div>
-        <div class="accordion-body">
-            교육: {{ i.education }}
-        </div>
-        <div class="accordion-body">
-            구인 유형: {{ i.employment_type }}
-        </div>
-        <div class="accordion-body">
-            지역: {{ i.work_place }}
-        </div>
+        <div id="data{{ forloop.counter }}" class="accordion-collapse collapse"
+             aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionExample">
+            {% comment %} 공고 정보 {% endcomment %}
+            <div class="accordion-body">
+                <dl class="row">
+                    <dt class="col-sm-3">URL</dt>
+                    <dd><a href={{ i.url }}>{{ i.url }}</a></dd>
 
-        {% include "jobplanet.html" %}
-        {% include "kreditjob/kreditjob.html" %}
-        {% include "saramin.html" %}
+                    <dt class="col-sm-3">경력</dt>
+                    <dd class="col-sm-9">{{ i.career }}</dd>
+
+                    <dt class="col-sm-3">교육</dt>
+                    <dd class="col-sm-9">{{ i.education }}</dd>
+
+                    <dt class="col-sm-3">구인 유형</dt>
+                    <dd class="col-sm-9">{{ i.employment_type }}</dd>
+
+                    <dt class="col-sm-3">지역</dt>
+                    <dd class="col-sm-9">{{ i.work_place }}</dd>
+                </dl>
+
+                {% include "jobplanet.html" %}
+                <br>
+                {% include "kreditjob/kreditjob.html" %}
+                <br>
+                {% include "saramin.html" %}
+                <br>
+                <form hx-post="{% url 'update_company' %}" hx-trigger="click"
+                      hx-swap="none">
+                    <input name="company" type="hidden" value={{ i.name }}>
+                    <button class="btn btn-primary" type="submit" id="liveToastBtn{{ forloop.counter }}">정보 업데이트
+                        요청
+                    </button>
+                </form>
+            </div>
 
 
-        <form hx-post="{% url 'update_company' %}" hx-trigger="click"
-              hx-swap="none">
-            <input name="company" type="hidden" value={{ i.name }}>
-            <button class="btn btn-primary" type="submit" id="liveToastBtn{{ forloop.counter }}">정보 업데이트
-                요청
-            </button>
-        </form>
+        </div>
     </div>
 </div>

@@ -3,23 +3,21 @@
 <div class="accordion" id="search_results">
     {% if context %}
         <div class="accordion-item">
-            <h2 class="accordion-header" id="heading-saramin">
+            <div class="accordion-header" id="heading-saramin">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#data-saramin" aria-expanded="false"
                         aria-controls="data-saramin">
                     사람인 공고
                 </button>
                 <div aria-labelledby="data-saramin" class="accordion-collapse collapse show" id="data-saramin">
-                    <div class="accordion" id="saramin-info">
-                        {% for i in context.saramin %}
-                            {% include 'result_jobs.html' %}
-                        {% endfor %}
-                    </div>
+                    {% for i in context.saramin %}
+                        {% include 'result_jobs.html' %}
+                    {% endfor %}
                 </div>
-            </h2>
+            </div>
         </div>
         <div class="accordion-item">
-            <h2 class="accordion-header" id="heading-jobkorea">
+            <div class="accordion-header" id="heading-jobkorea">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#data-jobkorea" aria-expanded="false"
                         aria-controls="data-jobkorea">
@@ -27,13 +25,11 @@
                 </button>
 
                 <div aria-labelledby="data-jobkorea" class="accordion-collapse collapse show" id="data-jobkorea">
-                    <div class="accordion" id="jobkorea-info">
-                        {% for i in context.jobkorea %}
-                            {% include 'result_jobs.html' %}
-                        {% endfor %}
-                    </div>
+                    {% for i in context.jobkorea %}
+                        {% include 'result_jobs.html' %}
+                    {% endfor %}
                 </div>
-            </h2>
+            </div>
         </div>
 
     {% elif data == True %}

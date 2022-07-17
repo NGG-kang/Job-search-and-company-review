@@ -1,32 +1,31 @@
 {% load utils %}
-<div class="accordion-body">
-    JobPlanet :
-    {% if i.objs.1 %}
-        {% if i.objs.1|get_type == 'list' %}
-            기업 매칭 실패, 이름이 같은 기업을 모두 불러옵니다.
+
+JobPlanet :
+{% if i.objs.1 %}
+    {% if i.objs.1|get_type == 'list' %}
+        기업 매칭 실패, 이름이 같은 기업을 모두 불러옵니다.
+        <br>
+        {% for obj in i.objs.1 %}
             <br>
-            {% for obj in i.objs.1 %}
-                <br>
-                이름 : {{ obj.name }} <br/>
-                링크 :
-                <a href="https://www.jobplanet.co.kr/companies/{{ obj.company_pk }}/">{{ obj.company_pk }}</a>
-                <br/>
-                {% for key, value in obj.data.items %}
-                    {{ key }} : {{ value }}<br/>
-                {% endfor %}
-            {% endfor %}
-        {% else %}
-            <br>
-            이름 : {{ i.objs.1.name }} <br/>
+            이름 : {{ obj.name }} <br/>
             링크 :
-            <a href="https://www.jobplanet.co.kr/companies/{{ i.objs.1.company_pk }}/">{{ i.objs.1.company_pk }}</a>
+            <a href="https://www.jobplanet.co.kr/companies/{{ obj.company_pk }}/">{{ obj.company_pk }}</a>
             <br/>
-            {% for key, value in i.objs.1.data.items %}
+            {% for key, value in obj.data.items %}
                 {{ key }} : {{ value }}<br/>
             {% endfor %}
-        {% endif %}
+        {% endfor %}
     {% else %}
-        매칭 없음
+        <br>
+        이름 : {{ i.objs.1.name }} <br/>
+        링크 :
+        <a href="https://www.jobplanet.co.kr/companies/{{ i.objs.1.company_pk }}/">{{ i.objs.1.company_pk }}</a>
         <br/>
+        {% for key, value in i.objs.1.data.items %}
+            {{ key }} : {{ value }}<br/>
+        {% endfor %}
     {% endif %}
-</div>
+{% else %}
+    매칭 없음
+    <br/>
+{% endif %}

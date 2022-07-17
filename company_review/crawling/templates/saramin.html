@@ -1,31 +1,29 @@
 {% load utils %}
-<div class="accordion-body">
-    Saramin:
-    {% if i.objs.0 %}
-        {% if i.objs.0|get_type == 'list' %}
-            기업 매칭 실패, 이름이 같은 기업을 모두 불러옵니다.
-            <br>
-            {% for obj in i.objs.0 %}
-                이름 : {{ obj.name }} <br>
-                링크 :
-                <a href="https://www.saramin.co.kr/zf_user/company-info/view?csn={{ obj.company_pk }}">{{ obj.company_pk }}</a>
-                <br>
-                {% for key, value in obj.data.items %}
-                    {{ key }} : {{ value }}<br/>
-                {% endfor %}
-            {% endfor %}
-        {% else %}
-            <br/>
-            이름 : {{ i.objs.0.name }} <br>
+Saramin:
+{% if i.objs.0 %}
+    {% if i.objs.0|get_type == 'list' %}
+        기업 매칭 실패, 이름이 같은 기업을 모두 불러옵니다.
+        <br>
+        {% for obj in i.objs.0 %}
+            이름 : {{ obj.name }} <br>
             링크 :
-            <a href="https://www.saramin.co.kr/zf_user/company-info/view?csn={{ i.objs.0.company_pk }}">{{ i.objs.0.company_pk }}</a>
+            <a href="https://www.saramin.co.kr/zf_user/company-info/view?csn={{ obj.company_pk }}">{{ obj.company_pk }}</a>
             <br>
-            {% for key, value in i.objs.0.data.items %}
+            {% for key, value in obj.data.items %}
                 {{ key }} : {{ value }}<br/>
             {% endfor %}
-        {% endif %}
+        {% endfor %}
     {% else %}
-        매칭 없음
         <br/>
+        이름 : {{ i.objs.0.name }} <br>
+        링크 :
+        <a href="https://www.saramin.co.kr/zf_user/company-info/view?csn={{ i.objs.0.company_pk }}">{{ i.objs.0.company_pk }}</a>
+        <br>
+        {% for key, value in i.objs.0.data.items %}
+            {{ key }} : {{ value }}<br/>
+        {% endfor %}
     {% endif %}
-</div>
+{% else %}
+    매칭 없음
+    <br/>
+{% endif %}
