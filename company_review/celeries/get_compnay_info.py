@@ -8,15 +8,7 @@ from bs4 import BeautifulSoup
 from crawling.models import JobPlanet, KreditJob, Saramin
 from django.utils import timezone
 from proxy import proxies
-
-
-def process_name(name):
-    name = re.sub(r"\([^)]*\)", "", name)
-    name = re.sub(r"（[^)]*）", "", name)
-
-    name = re.sub(r"[^a-zA-Z0-9가-힣]", "", name)
-    name = re.sub(r"주식회사", "", name)
-    return name.strip()
+from config.utils import process_name, process_address
 
 
 def get_jobplanet_company(name, update=False):
@@ -43,14 +35,8 @@ def get_jobplanet_company(name, update=False):
         soup = BeautifulSoup(html.content, "lxml")
         company_name, company_info = find_content(soup)
         address = company_info["주소"]
-        _address = address.replace("본사: ", "")
-        _address = address.split(" ")
-        if len(_address) >= 2:
-            _address[0] = _address[0].replace("광역시", "")
-            _address[0] = _address[0].replace(",", "")
-            search_address = f"{_address[0]} {_address[1]}"
-        else:
-            search_address = address
+        search_address = address.replace("본사: ", "")
+        search_address = process_address(search_address)
         return (company_name, company_info, address, search_address)
 
     print(
@@ -92,7 +78,7 @@ def get_jobplanet_company(name, update=False):
                         search_address,
                     ) = get_company_content(_id)
                     JobPlanet(
-                        name=process_name(company_name),
+                        eame=process_name(company_name),
                         company_pk=_id,
                         data=company_info,
                         address=address,
@@ -122,13 +108,7 @@ def get_saramin_company(name, update=False):
             value = re.sub(r" {2,}", "", val.find("dd").text.strip())
             if key == "기업주소":
                 address = value
-                _address = address.split(" ")
-                if len(_address) >= 2:
-                    _address[0] = _address[0].replace("광역시", "")
-                    _address[0] = _address[0].replace(",", "")
-                    _address = f"{_address[0]} {_address[1]}"
-                else:
-                    _address = address
+                _address = process_address(address)
             data[key] = value
         return address, _address, data
 
@@ -284,13 +264,7 @@ def get_kreditjob_company(company, update=False):
                 k.company_jobdam = company_jobdam
                 k.save()
             except KreditJob.DoesNotExist:
-                _address = WKP_ADRS.split(" ")
-                if len(_address) >= 2:
-                    _address[0] = _address[0].replace("광역시", "")
-                    _address[0] = _address[0].replace(",", "")
-                    _address = f"{_address[0]} {_address[1]}"
-                else:
-                    _address = WKP_ADRS
+                address = process_address(WKP_ADRS)
                 (
                     company_base_content,
                     company_info_data,
@@ -299,7 +273,7 @@ def get_kreditjob_company(company, update=False):
                 KreditJob.objects.create(
                     name=process_name(CMPN_NM),
                     address=WKP_ADRS,
-                    search_address=_address,
+                    search_address=address,
                     company_pk=PK_NM_HASH,
                     company_base_content=company_base_content,
                     company_info_data=company_info_data,
