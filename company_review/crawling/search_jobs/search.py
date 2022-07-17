@@ -12,6 +12,7 @@ from crawling.models import JobPlanet, KreditJob, Saramin, SearchResult
 from itertools import chain
 from django.core.cache import cache
 from traceback import print_exc
+from config.utils import process_address
 
 
 def search_and_save_row(q, celery=False):
@@ -63,7 +64,7 @@ def search_and_save_row(q, celery=False):
             def get_company_info_dict(job, value_dict):
                 if value_dict and job["name"] in value_dict:
                     for j in value_dict[job["name"]]:
-                        if job["work_place"] == j["search_address"]:
+                        if process_address(job["work_place"]) == j["search_address"]:
                             return j
                     return [val for val in value_dict[job["name"]]]
                 else:
