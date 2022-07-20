@@ -78,7 +78,7 @@ def get_jobplanet_company(name, update=False):
                         search_address,
                     ) = get_company_content(_id)
                     JobPlanet(
-                        eame=process_name(company_name),
+                        name=process_name(company_name),
                         company_pk=_id,
                         data=company_info,
                         address=address,
