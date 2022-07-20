@@ -39,9 +39,6 @@ def get_jobplanet_company(name, update=False):
         search_address = process_address(search_address)
         return (company_name, company_info, address, search_address)
 
-    print(
-        "---------------------------------JOBPLNET----------------------------------------"
-    )
     search_url = f"https://www.jobplanet.co.kr/autocomplete/autocomplete/suggest.json?term={name}"
     html = requests.get(search_url, allow_redirects=False, proxies=proxies)
     companies = json.loads(html.content)["companies"]
@@ -55,7 +52,7 @@ def get_jobplanet_company(name, update=False):
                     j = JobPlanet.objects.get(company_pk=_id)
                     now = timezone.now()
                     if now < (j.updated + timedelta(days=7)):
-                        print(name, "7일 지나지 않음, skip")
+                        print(name + "7일 지나지 않음, skip")
                         continue
                     (
                         company_name,
@@ -69,7 +66,7 @@ def get_jobplanet_company(name, update=False):
                     j.address = address
                     j.search_address = search_address
                     j.save()
-                    print(company_name, "업데이트")
+                    print("jobplanet" + company_name + "업데이트")
                 except JobPlanet.DoesNotExist:
                     (
                         company_name,
@@ -84,7 +81,7 @@ def get_jobplanet_company(name, update=False):
                         address=address,
                         search_address=search_address,
                     ).save()
-                    print("jobplanet", company_name, "저장")
+                    print("jobplanet" + company_name + "저장")
             except Exception as e:
                 print(search_url)
                 print(traceback.print_exc())
@@ -100,7 +97,7 @@ def get_saramin_company(name, update=False):
             data = {}
             return address, _address, data
         data_list = corp_info.find_all("dl")
-        
+
         address = ""
         _address = ""
         for val in data_list:
@@ -135,7 +132,7 @@ def get_saramin_company(name, update=False):
                     s = Saramin.objects.get(company_pk=company_pk)
                     now = timezone.now()
                     if now < (s.updated + timedelta(days=7)):
-                        print(name, "7일 지나지 않음, skip")
+                        print(name + "7일 지나지 않음, skip")
                         continue
                     address, search_address, data = get_company_content(soup)
                     s.name = name
@@ -144,6 +141,7 @@ def get_saramin_company(name, update=False):
                     s.data = data
                     s.search_address = search_address
                     s.save()
+                    print("saramin" + name + "업데이트")
                 except Saramin.DoesNotExist:
                     address, search_address, data = get_company_content(soup)
                     Saramin(
@@ -153,7 +151,7 @@ def get_saramin_company(name, update=False):
                         data=data,
                         search_address=search_address,
                     ).save()
-                    print("saramin", name, "저장")
+                    print("saramin" + name + "저장")
             except:
                 print(search_url)
                 print(traceback.print_exc())
@@ -227,9 +225,6 @@ def get_kreditjob_company(company, update=False):
         )
         return company_base_content, company_info_data, company_jobdam
 
-    print(
-        "---------------------------------KREDITJOB----------------------------------------"
-    )
     company = process_name(company)
     search_url = f"https://www.kreditjob.com/api/search/autocomplete"
     search_response = json.loads(
@@ -245,24 +240,26 @@ def get_kreditjob_company(company, update=False):
             CMPN_NM = search_company["CMPN_NM"]
             WKP_ADRS = search_company["WKP_ADRS"]
             PK_NM_HASH = search_company["PK_NM_HASH"]
+            name = process_name(CMPN_NM)
 
             try:
                 k = KreditJob.objects.get(company_pk=PK_NM_HASH)
                 now = timezone.now()
                 if now < (k.updated + timedelta(days=7)):
-                    print(CMPN_NM, "7일 지나지 않음, skip")
+                    print(name + "7일 지나지 않음, skip")
                     continue
                 (
                     company_base_content,
                     company_info_data,
                     company_jobdam,
                 ) = get_company_content(PK_NM_HASH)
-                k.name = process_name(CMPN_NM)
+                k.name = name
                 k.address = WKP_ADRS
                 k.company_base_content = company_base_content
                 k.company_info_data = company_info_data
                 k.company_jobdam = company_jobdam
                 k.save()
+                print("kreditjob" + name + "업데이트")
             except KreditJob.DoesNotExist:
                 address = process_address(WKP_ADRS)
                 (
@@ -271,7 +268,7 @@ def get_kreditjob_company(company, update=False):
                     company_jobdam,
                 ) = get_company_content(PK_NM_HASH)
                 KreditJob.objects.create(
-                    name=process_name(CMPN_NM),
+                    name=name,
                     address=WKP_ADRS,
                     search_address=address,
                     company_pk=PK_NM_HASH,
@@ -279,7 +276,7 @@ def get_kreditjob_company(company, update=False):
                     company_info_data=company_info_data,
                     company_jobdam=company_jobdam,
                 )
-                print("kreditjob", CMPN_NM, "저장")
+                print("kreditjob" + CMPN_NM + "저장")
         except Exception as e:
             print("크레딧잡 에러")
             print(traceback.print_exc())
