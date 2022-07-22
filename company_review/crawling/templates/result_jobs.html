@@ -10,27 +10,31 @@
             {% comment %} 공고 정보 {% endcomment %}
             <div class="accordion-body">
                 <dl class="row">
-                    <dt class="col-sm-3">URL</dt>
-                    <dd><a href={{ i.url }}>{{ i.url }}</a></dd>
+                    <dt><a href={{ i.url }} target="_blank">공고 보러가기</a></dt>
+                    <dd></dd>
 
-                    <dt class="col-sm-3">경력</dt>
+                    <dt>경력</dt>
                     <dd class="col-sm-9">{{ i.career }}</dd>
 
-                    <dt class="col-sm-3">교육</dt>
+                    <dt>교육</dt>
                     <dd class="col-sm-9">{{ i.education }}</dd>
 
-                    <dt class="col-sm-3">구인 유형</dt>
+                    <dt>구인 유형</dt>
                     <dd class="col-sm-9">{{ i.employment_type }}</dd>
 
-                    <dt class="col-sm-3">지역</dt>
+                    <dt>지역</dt>
                     <dd class="col-sm-9">{{ i.work_place }}</dd>
                 </dl>
+                <ul class="list-group">
+                    <li class="list-group-item">{% include "kreditjob/kreditjob.html" %}</li>
+                    <li class="list-group-item">{% include "jobplanet.html" %}</li>
+                    <li class="list-group-item">{% include "saramin.html" %}</li>
+                </ul>
 
-                {% include "jobplanet.html" %}
                 <br>
-                {% include "kreditjob/kreditjob.html" %}
+
                 <br>
-                {% include "saramin.html" %}
+
                 <br>
                 <form hx-post="{% url 'update_company' %}" hx-trigger="click"
                       hx-swap="none">
@@ -40,8 +44,6 @@
                     </button>
                 </form>
             </div>
-
-
         </div>
     </div>
 </div>

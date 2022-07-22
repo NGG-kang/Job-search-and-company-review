@@ -9,7 +9,7 @@ JobPlanet :
             <br>
             이름 : {{ obj.name }} <br/>
             링크 :
-            <a href="https://www.jobplanet.co.kr/companies/{{ obj.company_pk }}/">{{ obj.company_pk }}</a>
+            <a href="https://www.jobplanet.co.kr/companies/{{ obj.company_pk }}/" target="_blank">{{ obj.company_pk }}</a>
             <br/>
             {% for key, value in obj.data.items %}
                 {{ key }} : {{ value }}<br/>
@@ -19,7 +19,7 @@ JobPlanet :
         <br>
         이름 : {{ i.objs.1.name }} <br/>
         링크 :
-        <a href="https://www.jobplanet.co.kr/companies/{{ i.objs.1.company_pk }}/">{{ i.objs.1.company_pk }}</a>
+        <a href="https://www.jobplanet.co.kr/companies/{{ i.objs.1.company_pk }}/" target="_blank">{{ i.objs.1.company_pk }}</a>
         <br/>
         {% for key, value in i.objs.1.data.items %}
             {{ key }} : {{ value }}<br/>

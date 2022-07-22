@@ -7,7 +7,7 @@ Saramin:
         {% for obj in i.objs.0 %}
             이름 : {{ obj.name }} <br>
             링크 :
-            <a href="https://www.saramin.co.kr/zf_user/company-info/view?csn={{ obj.company_pk }}">{{ obj.company_pk }}</a>
+            <a href="https://www.saramin.co.kr/zf_user/company-info/view?csn={{ obj.company_pk }}" target="_blank">{{ obj.company_pk }}</a>
             <br>
             {% for key, value in obj.data.items %}
                 {{ key }} : {{ value }}<br/>
@@ -17,7 +17,7 @@ Saramin:
         <br/>
         이름 : {{ i.objs.0.name }} <br>
         링크 :
-        <a href="https://www.saramin.co.kr/zf_user/company-info/view?csn={{ i.objs.0.company_pk }}">{{ i.objs.0.company_pk }}</a>
+        <a href="https://www.saramin.co.kr/zf_user/company-info/view?csn={{ i.objs.0.company_pk }}" target="_blank">{{ i.objs.0.company_pk }}</a>
         <br>
         {% for key, value in i.objs.0.data.items %}
             {{ key }} : {{ value }}<br/>

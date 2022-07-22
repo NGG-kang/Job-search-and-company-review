@@ -1,24 +1,39 @@
+{% load utils %}
 <br>
 이름 : {{ obj.name }} <br>
 링크 :
-<a href="https://www.kreditjob.com/company/{{ obj.company_pk }}/">{{ obj.company_pk }}</a>
+<a href="https://www.kreditjob.com/company/{{ obj.company_pk }}/" target="_blank">{{ obj.company_pk }}</a>
 <br>
-기업정보 :
+기업정보 : <br>
 소재지 : {{ obj.company_base_content.company_info.location }} <br>
-인원수 : {{ obj.company_base_content.company_summary.employee.total }}명 <br>
-고용 : {{ obj.company_base_content.company_summary.employee.hired }}명 <br>
-퇴사 : {{ obj.company_base_content.company_summary.employee.left }}명 <br>
-업력 : {{ obj.company_base_content.company_summary.info.age }}년 <br>
-데이터 기록 시간 : {{ obj.company_base_content.company_employee.employees.NPS.updatedAt }} <br>
-기업 데이터 공개여부 : {{ obj.company_base_content.company_status }} <br>
-
-잡담 : <br/>
-
-{% if obj.company_jobdam %}
-    {% for k in obj.company_jobdam.board %}
-        <a href="https://www.kreditjob.com/board/{{ k.JOBDOM_NO }}">{{ k.TITLE }}</a>
-        <br>
-    {% endfor %}
+{% if obj.company_base_content.company_status.employees %}
+    인원수 : Block <br>
+    고용 : Block <br>
+    퇴사 : Block <br>
+    업력 : Block <br>
 {% else %}
-    잡담 없음
+    인원수 : {{ obj.company_base_content.company_employee.employees.NPS.total.employee }}명 / 동종 산업 평균 {{ obj.company_base_content.company_employee.employees.NPS.total.industryRate|percentage }}<br>
+    최근 1년 인원증가율 : {{ obj.company_base_content.company_employee.employees.NPS.hired.employee }}명 / {{ obj.company_base_content.company_employee.employees.NPS.hired.rate|percentage }}<br>
+    최근 1년 퇴사율: {{ obj.company_base_content.company_employee.employees.NPS.left.employee }}명 / {{ obj.company_base_content.company_employee.employees.NPS.left.rate|percentage }}<br>
+    업력 : {{ obj.company_base_content.company_summary.info.age }}년 <br>
 {% endif %}
+
+
+데이터 소스 : {{ obj.company_base_content.company_employee.defaultSource }} <br>
+데이터 기록 시간 : {{ obj.company_base_content.company_employee.employees.NPS.updatedAt }} <br>
+
+{% if obj.company_base_content.company_status.board %}
+    {% if obj.company_jobdam.count >= 1 %}
+        {% for k in obj.company_jobdam.board %}
+            <a href="https://www.kreditjob.com/board/{{ k.JOBDOM_NO }}" target="_blank">{{ k.TITLE }}</a>
+            <br>
+        {% endfor %}
+    {% else %}
+        잡담: 0개
+    {% endif %}
+{% else %}
+    잡담 : Block
+{% endif %}
+
+
+
