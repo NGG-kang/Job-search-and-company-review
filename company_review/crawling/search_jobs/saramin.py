@@ -2,9 +2,10 @@ from bs4 import BeautifulSoup
 import requests
 import re
 from proxy import proxies
-from crawling.models import Saramin
 from traceback import print_exc
 from celeries.tasks import get_company_info
+from django.core.cache import cache
+from config.utils import process_name
 
 
 def get_saramin_search(name):
@@ -51,8 +52,7 @@ def get_saramin_search(name):
                 company_nm = company.find("div", {"class": "col company_nm"})
                 company_name = company_nm.find("a")["title"]
                 company_pk = company_nm.find("button")["csn"]
-                company_name = re.sub(r"\([^)]*\)", "", company_name)
-                company_name = re.sub(r"[^a-zA-Z0-9가-힣]", "", company_name)
+                company_name = process_name(company_name)
                 # 제목
                 notification_info = company.find("div", {"class": "col notification_info"})
                 notification_info = notification_info.find("a")
@@ -88,7 +88,10 @@ def get_saramin_search(name):
                     "deadlines": deadlines,
                 }
                 return_list.append(data)
-                get_company_info.delay(company_name,True)
+                if cache.get(company_name):
+                    print("사람인" + company_name + "검색 하루 지나지 않음")
+                    cache.set(company_name, 86400)
+                    get_company_info.delay(company_name,True)
             page += 1
             
             return return_list, len(return_list)

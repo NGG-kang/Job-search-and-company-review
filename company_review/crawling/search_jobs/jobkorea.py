@@ -1,17 +1,12 @@
 from bs4 import BeautifulSoup
 import requests
-import os
-import sys
-import django
-from pathlib import Path
 from fake_headers import Headers
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-sys.path.append(os.path.dirname(BASE_DIR))
-from proxy import proxies
 import re
 from traceback import print_exc
 from celeries.tasks import get_company_info
+from django.core.cache import cache
+from config.utils import process_name
+
 
 def get_jobkorea_search(stext):
     # 검색어
@@ -54,8 +49,7 @@ def get_jobkorea_search(stext):
                 company_nm = company_nm.find("a")
                 url = f'https://www.jobkorea.co.kr/{company_nm["href"]}'
                 name = company_nm["title"]
-                name = re.sub(r"\([^)]*\)", "", name)
-                name = re.sub(r"[^a-zA-Z0-9가-힣]", "", name)
+                name = process_name(name)
                 # 제목
                 post_list_info = company.find("div", {"class": "post-list-info"})
                 title = post_list_info.find("a")["title"]
@@ -86,7 +80,10 @@ def get_jobkorea_search(stext):
                     "work_place": location,
                     "deadlines": deadlines,
                 }
-                get_company_info.delay(name, True)
+                if cache.get(name):
+                    cache.set(name, 86400)
+                    print("잡코리아" + name + "검색 하루 지나지 않음")
+                    get_company_info.delay(name, True)
                 return_list.append(data)
             Page_No += 1
     except:
