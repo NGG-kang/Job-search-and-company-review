@@ -11,7 +11,7 @@
             <div class="accordion-body">
                 <ul class="list-group list-group-flush">
                     <button type="button" class="list-group-item list-group-item-action list-group-item-primary"
-                            onclick=" window.open({{ i.url }},'_blank')">공고 보러가기
+                            onclick=" window.open('{{ i.url }}','_blank')">공고 보러가기
                     </button>
                     <form hx-post="{% url 'update_company' %}" hx-trigger="click"
                           hx-swap="none">
