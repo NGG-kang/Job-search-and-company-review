@@ -1,33 +1,33 @@
 {% load static %}
 {% load django_htmx %}
 {% django_htmx_script %}
-
+<!DOCTYPE html>
 <head>
-  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-  <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
-  <script src="https://unpkg.com/htmx.org@1.7.0"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <script src="https://unpkg.com/htmx.org@1.7.0"></script>
 
 </head>
 
 <body>
-  <div class="container-xxl ">
-    {% include 'header.html' %}
-    <div class="row mb-4">
-      {% block tasks %}{% endblock tasks %}
-    </div>
-    <div class="row">
-      {% block index %}{% endblock index %}
-    </div>
-  </div>
-  <script>
+<div class="container-fluid my-md-4 p-3">
+    <main class="order-1">
+        <div class="ps-lg-4">
+            {% include 'header.html' %}
+            <div class="mb-4">{% block tasks %}{% endblock tasks %}</div>
+            <div class="mb-4">{% block index %}{% endblock index %}</div>
+        </div>
+    </main>
+</div>
+<script>
     document
-      .body
-      .addEventListener('htmx:configRequest', (event) => {
-        event
-          .detail
-          .headers['X-CSRFToken'] = '{{ csrf_token }}';
-      })
-  </script>
+        .body
+        .addEventListener('htmx:configRequest', (event) => {
+            event
+                .detail
+                .headers['X-CSRFToken'] = '{{ csrf_token }}';
+        })
+</script>
 </body>
 
 </html>
