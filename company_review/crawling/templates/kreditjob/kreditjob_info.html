@@ -17,17 +17,16 @@
     업력 : {{ obj.company_base_content.company_summary.info.age }}년 <br>
     데이터 소스 : {{ obj.company_base_content.company_employee.defaultSource }} <br>
     데이터 기록 시간 : {{ obj.company_base_content.company_employee.employees.NPS.updatedAt }} <br>
-
-
-{% else %}
+{% elif obj.company_base_content.company_status.employee == False %}
     인원수 : Block <br>
     고용 : Block <br>
     퇴사 : Block <br>
     업력 : Block <br>
     데이터 소스 : Block <br>
     데이터 기록 시간 : Block <br>
+{% else %}
+    데이터 업데이트중 <br>
 {% endif %}
-
 
 
 {% if obj.company_base_content.company_status.board == True %}
@@ -39,8 +38,10 @@
     {% else %}
         잡담: 0개
     {% endif %}
-{% else %}
+{% elif obj.company_base_content.company_status.board == False %}
     잡담 : Block
+{% else %}
+    데이터 업데이트중 <br>
 {% endif %}
 
 
