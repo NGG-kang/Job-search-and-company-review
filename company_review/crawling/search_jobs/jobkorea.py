@@ -80,11 +80,8 @@ def get_jobkorea_search(stext):
                     "work_place": location,
                     "deadlines": deadlines,
                 }
-                if cache.get(name):
-                    cache.set(name, 86400)
-                    print("잡코리아" + name + "검색 하루 지나지 않음")
-                    get_company_info.delay(name, True)
                 return_list.append(data)
+                get_company_info.delay(name, True)
             Page_No += 1
     except:
         print(print_exc())

@@ -88,10 +88,7 @@ def get_saramin_search(name):
                     "deadlines": deadlines,
                 }
                 return_list.append(data)
-                if cache.get(company_name):
-                    print("사람인" + company_name + "검색 하루 지나지 않음")
-                    cache.set(company_name, 86400)
-                    get_company_info.delay(company_name,True)
+                get_company_info.delay(company_name,True)
             page += 1
             
             return return_list, len(return_list)
