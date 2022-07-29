@@ -1,10 +1,8 @@
 from bs4 import BeautifulSoup
 import requests
 from fake_headers import Headers
-import re
 from traceback import print_exc
-from celeries.tasks import get_company_info
-from django.core.cache import cache
+from celeries.tasks import get_kreditjob_info, get_jobplanet_info, get_saramin_info
 from config.utils import process_name
 
 
@@ -81,7 +79,9 @@ def get_jobkorea_search(stext):
                     "deadlines": deadlines,
                 }
                 return_list.append(data)
-                get_company_info.delay(name, True)
+                get_saramin_info.apply_async(kwargs={'name': name, 'update': True}, queue='saramin', priority=2)
+                get_jobplanet_info.apply_async(kwargs={'name': name, 'update': True}, queue='joplanet', priority=2)
+                get_kreditjob_info.apply_async(kwargs={'name': name, 'update': True}, queue='kreditjob', priority=2)
             Page_No += 1
     except:
         print(print_exc())

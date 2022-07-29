@@ -13,6 +13,7 @@ from itertools import chain
 from django.core.cache import cache
 from traceback import print_exc
 from config.utils import process_address
+from django.utils import timezone
 
 
 def search_and_save_row(q, celery=False):
@@ -85,6 +86,7 @@ def search_and_save_row(q, celery=False):
                     jobkorea_list.append(job)
                     continue
             all_jobs = {'saramin': saramin_list, 'jobkorea': jobkorea_list}
+            all_jobs['time'] = timezone.now()
             cache.set(q, all_jobs, None)
         except:
             print(print_exc())

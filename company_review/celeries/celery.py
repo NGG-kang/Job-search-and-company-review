@@ -6,11 +6,10 @@ from pathlib import Path
 
 app = Celery(
     "config",
-    broker="redis://default@redis//",
+    broker=f"redis://default@{os.getenv('REDIS_BROKER')}//",
 )
 app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks()
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.append(os.path.dirname(BASE_DIR))
@@ -24,15 +23,17 @@ from celeries.get_compnay_info import (
 )
 from crawling.models import KreditJob, Saramin, JobPlanet
 from django.core.cache import cache
-import time
 
 
-@app.on_after_configure.connect
-def setup_periodic_tasks(sender, **kwrags):
-    sender.add_periodic_task(
-        300.0, search_and_save.s(kwrags["q"], kwrags["celery"]), name="django search"
-    )
-
+app.conf.task_routes = {
+    'crawling.search_jobs.search.search_and_save_row': {'queue': 'search'},
+    'celeries.tasks.get_saramin_info': {'queue': 'saramin'},
+    'celeries.tasks.get_jobplanet_info': {'queue': 'jobplenet'},
+    'celeries.tasks.get_kreditjob_info': {'queue': 'kreditjob'},
+}
+app.conf.broker_transport_options = {
+    'queue_order_strategy': 'priority',
+}
 
 @app.task(bind=True)
 def get_company_info(self, name, update=False):
@@ -40,6 +41,7 @@ def get_company_info(self, name, update=False):
     get_jobplanet_company(name, update)
     get_saramin_company(name, update)
     get_kreditjob_company(name, update)
+
 
 
 @app.task(bind=True)

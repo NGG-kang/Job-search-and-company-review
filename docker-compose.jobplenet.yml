@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  web:
+    container_name: web
+    build:
+      context: ./company_review
+      dockerfile: Dockerfile/Dockerfile.worker
+    command: celery -A celeries.celery worker -B -l INFO -Q jobplanet --concurrency=3 --scheduler django_celery_beat.schedulers:DatabaseScheduler &
+    ports:
+      - 8000
+    env_file:
+      - ./.env/.env.prod
+    volumes:
+      - static:/usr/src/company_review/static
+      - media:/usr/src/company_review/media
+volumes:
+  postgresql_data:
+  redis_data:
+

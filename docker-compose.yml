@@ -14,6 +14,7 @@ services:
       - DEBUG=True
       - STAGE=DEV
       - DJANGO_SETTINGS_MODULE=config.settings.dev
+      - REDIS_BROKER=redis
   db:
     image: postgres:12.7-alpine
     ports:

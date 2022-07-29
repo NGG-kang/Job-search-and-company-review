@@ -34,7 +34,7 @@ def update_company(request, **kwargs):
     if request.htmx:
         if request.POST:
             company = request.POST.get("company")
-            get_company_info.delay(company, update=True)
+            get_company_info.apply_async(kwargs={'name': company, 'update': True})
             return JsonResponse({"message": "success"})
     return HttpResponseBadRequest("using method post")
 
@@ -63,7 +63,9 @@ def add_search_cron_beat(request):
                     task="crawling.search_jobs.search.search_and_save",
                     enabled=True,
                     interval=interval,
-                    args=f'["{company}", "True"]'
+                    args=f'["{company}", "True"]',
+                    priority=0,
+                    queue='search'
                 )
                 messages.add_message(request, messages.INFO, 'Hello world.')
                 return render(request=request, template_name="result.html")
