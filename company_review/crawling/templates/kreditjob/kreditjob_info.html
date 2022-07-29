@@ -4,7 +4,7 @@
 링크 :
 <a href="https://www.kreditjob.com/company/{{ obj.company_pk }}/" target="_blank">{{ obj.company_pk }}</a>
 <br>
-기업정보 : <br>
+기업정보 : <br><br>
 소재지 : {{ obj.company_base_content.company_info.location }} <br>
 
 {% if obj.company_base_content.company_status.employee == True %}
@@ -25,7 +25,7 @@
     데이터 소스 : Block <br>
     데이터 기록 시간 : Block <br>
 {% else %}
-    데이터 업데이트중 <br>
+    기업 정보 업데이트중 <br>
 {% endif %}
 
 
@@ -41,8 +41,8 @@
 {% elif obj.company_base_content.company_status.board == False %}
     잡담 : Block
 {% else %}
-    데이터 업데이트중 <br>
+    잡담 업데이트중 <br>
 {% endif %}
-
+<br>
 
 
