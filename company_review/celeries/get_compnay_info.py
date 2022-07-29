@@ -224,7 +224,7 @@ def get_kreditjob_company(company, update=False):
             ).content
         )
         return company_base_content, company_info_data, company_jobdam
-
+    
     company = process_name(company)
     search_url = f"https://www.kreditjob.com/api/search/autocomplete"
     search_response = json.loads(
@@ -278,5 +278,6 @@ def get_kreditjob_company(company, update=False):
                 )
                 print("kreditjob" + CMPN_NM + "저장")
         except Exception as e:
+            print(company)
             print("크레딧잡 에러")
             print(traceback.print_exc())
