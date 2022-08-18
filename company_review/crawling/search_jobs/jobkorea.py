@@ -12,9 +12,9 @@ def get_jobkorea_search(stext):
     # 지역
     local = "local=B000%2CI010"
     # 경력type 1: 신입 2: 경력 3: 신입, 경력
-    careerType = "careerType=1"
+    careerType = "careerType=3"
     careerMin = "careerMin=1"
-    careerMax = "careerMax=3"
+    careerMax = "careerMax=10"
     Page_No = 1
     if careerType == "careerType=1":
         careerMin = ""

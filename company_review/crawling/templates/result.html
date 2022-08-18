@@ -3,6 +3,21 @@
 <div class="accordion mb-sm-5" id="search_results">
     {% if context %}
         <div class="accordion-item">
+            <div class="accordion-header" id="heading-jobkorea">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#data-jobkorea" aria-expanded="true"
+                        aria-controls="data-jobkorea">
+                    잡코리아
+                </button>
+
+                <div aria-labelledby="data-jobkorea" class="accordion-flush collapse" id="data-jobkorea">
+                    {% for i in context.jobkorea %}
+                        {% include 'result_jobs.html' %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
             <div class="accordion-header" id="heading-saramin">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                         data-bs-target="#data-saramin" aria-expanded="true"
@@ -16,21 +31,7 @@
                 </div>
             </div>
         </div>
-        <div class="accordion-item">
-            <div class="accordion-header" id="heading-jobkorea">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#data-jobkorea" aria-expanded="true"
-                        aria-controls="data-jobkorea">
-                    잡코리아
-                </button>
-
-                <div aria-labelledby="data-jobkorea" class="accordion-flush collapse show" id="data-jobkorea">
-                    {% for i in context.jobkorea %}
-                        {% include 'result_jobs.html' %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
+        
 
     {% elif data == True %}
         <div>

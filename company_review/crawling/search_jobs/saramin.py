@@ -10,7 +10,7 @@ from config.utils import process_name
 def get_saramin_search(name):
     # name = "django"
     url = "https://www.saramin.co.kr/zf_user/jobs/list/domestic?"
-    # 지역
+    # 지역 서울, 경기
     loc = "loc_mcd=101000%2C102000"
     # 검색단어
     searchword = f"searchword={name}"
@@ -19,11 +19,11 @@ def get_saramin_search(name):
     # 페이지
     page = 1
     # 1: 신입 2: 경력
-    exp_cd = "exp_cd=1"
+    exp_cd = "exp_cd=2"
     # 년도 최소, 신입은 없음
     exp_min = "exp_min=1"
     # 년도 맥시멈
-    exp_max = "exp_max=1"
+    exp_max = "exp_max=10"
     return_list = []
     if exp_cd == "exp_cd=1":
         exp_min = ""
