@@ -11,7 +11,7 @@ RUN apt-get update
 RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 
 RUN pip install --upgrade pip
-RUN pip install poetry
+RUN pip install poetry==1.2.0rc2
 COPY ./poetry.lock .
 COPY ./pyproject.toml .
 
