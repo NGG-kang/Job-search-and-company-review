@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "django_htmx",
     "django_celery_beat",
     "crispy_forms",
+    "admin_honeypot"
 ]
 
 MIDDLEWARE = [
