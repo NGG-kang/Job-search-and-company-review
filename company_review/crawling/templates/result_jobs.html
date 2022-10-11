@@ -13,18 +13,19 @@
                     <button type="button" class="list-group-item list-group-item-action list-group-item-primary"
                             onclick=" window.open('{{ i.url }}','_blank')">공고 보러가기
                     </button>
-                    <form hx-post="{% url 'update_company' %}" hx-trigger="click"
+                    <!-- <form hx-post="{% url 'update_company' %}" hx-trigger="click"
                           hx-swap="none">
                         <input name="company" type="hidden" value={{ i.name }}>
                         <button type="button" type="submit" id="liveToastBtn{{ forloop.counter }}"
                                 class="list-group-item list-group-item-action list-group-item-success"
                         >공고 업데이트 요청하기
                         </button>
-                    </form>
+                    </form> -->
                     <li class="list-group-item">경력 : {{ i.career }}</li>
                     <li class="list-group-item">교육 : {{ i.education }}</li>
                     <li class="list-group-item">구인 유형 : {{ i.employment_type }}</li>
                     <li class="list-group-item">지역 : {{ i.work_place }}</li>
+                    <li class="list-group-item {% if i.count >= 3 %}list-group-item-danger{% endif %}">최근 이 기업에서 현재 키워드로 올린 공고 횟수 : {{ i.count }}</li>
                 </ul>
                 <ul class="list-group">
                     <li class="list-group-item">{% include "kreditjob/kreditjob.html" %}</li>
