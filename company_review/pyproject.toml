@@ -30,6 +30,7 @@ fake-headers = "^1.0.2"
 pandas = "^1.4.1"
 ipykernel = "^6.9.1"
 django-crispy-forms = "^1.14.0"
+django-admin-honeypot = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"
