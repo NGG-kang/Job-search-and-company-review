@@ -1,10 +1,11 @@
 {% load utils %}
-<h2 class="mb-sm-5">검색 결과 / 저장된 시간 : {{ context.time }}</h2>
+
 <div class="accordion mb-sm-5" id="search_results">
+    <h2 class="mb-sm-5">검색 결과 / 저장된 시간 : {{ context.time }}</h2>
     {% if context %}
         <div class="accordion-item">
             <div class="accordion-header" id="heading-jobkorea">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#data-jobkorea" aria-expanded="true"
                         aria-controls="data-jobkorea">
                     잡코리아
@@ -17,6 +18,22 @@
                 </div>
             </div>
         </div>
+        <div class="accordion-item">
+            <div class="accordion-header" id="heading-wanted">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#data-wanted" aria-expanded="true"
+                        aria-controls="data-wanted">
+                    원티드
+                </button>
+
+                <div aria-labelledby="data-wanted" class="accordion-flush collapse" id="data-wanted">
+                    {% for i in context.wanted %}
+                        {% include 'result_jobs.html' %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
         <div class="accordion-item">
             <div class="accordion-header" id="heading-saramin">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -31,8 +48,6 @@
                 </div>
             </div>
         </div>
-        
-
     {% elif data == True %}
         <div>
             {{ request.GET.q }} 데이터 수집중입니다. 5분 뒤에 다시 검색해주세요
@@ -40,13 +55,7 @@
     {% elif data == False %}
         <div>
             {% if request.GET.q %}
-                {{ request.GET.q }} 데이터 수집중이 아닙니다.
-                <form hx-post="{% url 'add-search-info' %}" hx-trigger="click"
-                      hx-swap="none">
-                    <input name="company" type="hidden" value={{ request.GET.q }}>
-                    <button class="btn btn-primary" type="submit" id="liveToastBtn_crawling">{{ request.GET.q }} 크롤링 요청
-                    </button>
-                </form>
+                {% include 'result_none.html' %}
             {% else %}
                 <div>
                     작동중인 공고 정보 검색 및 공고 추가는 검색 후에 가능합니다.
@@ -54,30 +63,22 @@
             {% endif %}
         </div>
     {% else %}
-        <form hx-post="{% url 'add-search-info' %}" hx-trigger="click"
-              hx-swap="none">
-            <input name="company" type="hidden" value={{ request.GET.q }}>
-            <button class="btn btn-primary" type="submit">{{ request.GET.q }} 크롤링 요청</button>
-        </form>
-
+        {% if context.q %}
+            <form hx-post="{% url 'add-search-info' %}" hx-trigger="click"
+                hx-swap="none">
+                <input name="company" type="hidden" value={{ request.GET.q }}>
+                <button class="btn btn-primary" type="submit">{{ request.GET.q }} 크롤링 요청</button>
+            </form>
+        {% endif %}
     {% endif %}
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    {% include "message.html" %}
 </div>
 
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header" , id="toast-header">
-            <strong class="me-auto">요청 성공</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-            요청이 완료되었습니다. 5분 뒤에 다시 확인해주세요
-        </div>
-    </div>
-</div>
+<script>
+    $(document).ready(function() {
+        // show the alert
+        setTimeout(function() {
+            $(".alert").alert('close');
+        }, 2000);
+    });
+</script>

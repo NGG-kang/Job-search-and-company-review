@@ -1,0 +1,28 @@
+<p class="row-md-auto">{{ request.GET.q }} 데이터 수집중이 아닙니다.</p>
+<form hx-post="{% url 'add-search-info' %}" hx-target="#search_results">
+    {% if wanted_q %}
+    <div class="row">
+        <p class="col-md-auto">원티드 검색결과</p>
+        <select class="form-select col" name="wanted_category" aria-label="Default select example">
+            {% for value, key in wanted_category.items %}
+            {% if forloop.counter == 1 %}
+                <option value="">원티드 카테고리</option>
+            {% endif %}
+            <option value="{{ key.id }}">{{ key.title }}</option>
+            {% endfor %}
+        </select>
+        <select class="form-select col" name="wanted_q" aria-label="Default select example">
+            {% for wanted in wanted_q %}
+            {% if forloop.counter == 1 %}
+                <option value="">원티드 {{ request.GET.q }} 검색결과</option>
+            {% endif %}
+            <option value="{{ wanted.id }}">{{ wanted.title }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    {% else %}
+    <p class="row-md-auto">원티드 검색 결과 없음 </p>
+    {% endif %}
+    <input name="search_q" type="hidden" value={{ request.GET.q }}>
+    <button class="btn btn-primary row-md-auto" type="submit">{{ request.GET.q }} 크롤링 요청</button>
+</form>
