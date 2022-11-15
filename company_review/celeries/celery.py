@@ -26,7 +26,7 @@ from django.core.cache import cache
 
 
 app.conf.task_routes = {
-    'crawling.search_jobs.search.search_and_save_row': {'queue': 'search'},
+    'crawling.search_jobs.search.search_and_save': {'queue': 'search'},
     'celeries.tasks.get_saramin_info': {'queue': 'saramin'},
     'celeries.tasks.get_jobplanet_info': {'queue': 'jobplenet'},
     'celeries.tasks.get_kreditjob_info': {'queue': 'kreditjob'},
