@@ -53,7 +53,7 @@ services:
     build:
       context: ./company_review
       dockerfile: Dockerfile/Dockerfile.prod
-    command: celery -A celeries.celery worker -B -l INFO -Q search,saramin,kreditjob,jobplanet --concurrency=6 --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    command: ./entrypoint/entrypoint.worker.sh
     volumes:
       - ./company_review:/usr/src/company_review
     env_file:
