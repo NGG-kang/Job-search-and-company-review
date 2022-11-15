@@ -40,7 +40,8 @@ def get_saramin_search(stext):
         headers = Headers(os="mac", headers=True).generate()
         resq = requests.get(
             url,
-            headers=headers
+            headers=headers,
+            # proxies=proxies
         )
         soup = BeautifulSoup(resq.content, "lxml")
         search_list = soup.find("div", class_="list_body")
