@@ -1,7 +1,7 @@
 {% load utils %}
 
 <div class="accordion mb-sm-5" id="search_results">
-    <h2 class="mb-sm-5">검색 결과 / 저장된 시간 : {{ context.time }}</h2>
+    <h2 class="mb-sm-5">{{ request.GET.q }} 검색 결과 / 저장된 시간 : {{ context.time }}</h2>
     {% if context %}
         <div class="accordion-item">
             <div class="accordion-header" id="heading-jobkorea">
@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="accordion-item">
             <div class="accordion-header" id="heading-saramin">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -65,7 +65,7 @@
     {% else %}
         {% if context.q %}
             <form hx-post="{% url 'add-search-info' %}" hx-trigger="click"
-                hx-swap="none">
+                  hx-swap="none">
                 <input name="company" type="hidden" value={{ request.GET.q }}>
                 <button class="btn btn-primary" type="submit">{{ request.GET.q }} 크롤링 요청</button>
             </form>
@@ -75,9 +75,9 @@
 </div>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // show the alert
-        setTimeout(function() {
+        setTimeout(function () {
             $(".alert").alert('close');
         }, 2000);
     });
