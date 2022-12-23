@@ -16,8 +16,9 @@ services:
       - ./company_review:/usr/src/company_review
       - ./company_review/static:/usr/src/company_review/staticfiles
       - ./media:/usr/src/company_review/media
-    networks:
-      - job
+    links:
+      - redis
+      - db
   ###########################
   redis:
     container_name: job-redis
@@ -28,10 +29,6 @@ services:
     volumes:
       - redis_data:/etc/redis_data/data
       # - redis_data:/data
-    depends_on:
-      - web
-    networks:
-      - job
   db:
     container_name: job-db
     restart: always
@@ -45,8 +42,6 @@ services:
     volumes:
       - ./pgdata:/etc/postgresql/data
       # - ./pgdata:/var/lib/postgresql/data
-    networks:
-      - job
   worker:
     restart: always
     container_name: job-worker
@@ -60,11 +55,19 @@ services:
       - ./.env/.env.prod
     depends_on:
       - web
-    networks:
-      - job
-networks:
-  job:
-    driver: bridge
+    network_mode: service:surfshark
+  surfshark:
+    image: ilteoood/docker-surfshark
+    container_name: surfshark
+    env_file:
+      - ./.env/vpn.env
+    cap_add: 
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    restart: always
+    dns:
+      - 1.1.1.1
   ###########################
   # nginx-proxy:
   #   container_name: nginx-proxy
