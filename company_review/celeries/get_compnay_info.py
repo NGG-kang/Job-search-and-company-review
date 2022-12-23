@@ -2,13 +2,13 @@ import json
 import re
 import traceback
 from datetime import timedelta
-
+import time
 import requests
 from bs4 import BeautifulSoup
 from crawling.models import JobPlanet, KreditJob, Saramin
 from django.utils import timezone
-from proxy import proxies
 from config.utils import process_name, process_address
+from crawling.utils.functions import is_search_already
 
 
 def get_jobplanet_company(name, update=False):
@@ -31,7 +31,7 @@ def get_jobplanet_company(name, update=False):
 
     def get_company_content(_id):
         search_url = f"https://www.jobplanet.co.kr/companies/{_id}/landing/"
-        html = requests.get(search_url, allow_redirects=False, proxies=proxies)
+        html = requests.get(search_url, allow_redirects=False)
         soup = BeautifulSoup(html.content, "lxml")
         company_name, company_info = find_content(soup)
         address = company_info["주소"]
@@ -40,11 +40,12 @@ def get_jobplanet_company(name, update=False):
         return (company_name, company_info, address, search_address)
 
     search_url = f"https://www.jobplanet.co.kr/autocomplete/autocomplete/suggest.json?term={name}"
-    html = requests.get(search_url, allow_redirects=False, proxies=proxies)
+    html = requests.get(search_url, allow_redirects=False)
     companies = json.loads(html.content)["companies"]
     if html.status_code not in (302, 404):
         # 업데이트 할거면 풀기
         for company in companies:
+            time.sleep(2)
             try:
                 name = company["name"]
                 _id = company["id"]
@@ -85,6 +86,7 @@ def get_jobplanet_company(name, update=False):
             except Exception as e:
                 print(search_url)
                 print(traceback.print_exc())
+            
 
 
 def get_saramin_company(name, update=False):
@@ -111,10 +113,10 @@ def get_saramin_company(name, update=False):
 
     page = 1
     while True:
+        time.sleep(2)
         search_url = f"https://www.saramin.co.kr/zf_user/search/company?searchword={name}&page={page}"
         resq = requests.get(
             search_url,
-            proxies=proxies,
         )
         soup = BeautifulSoup(resq.content, "lxml")
         search_list = soup.find_all("div", class_="item_corp")
@@ -156,6 +158,7 @@ def get_saramin_company(name, update=False):
                 print(search_url)
                 print(traceback.print_exc())
         page += 1
+        
 
 
 def get_kreditjob_company(company, update=False):
@@ -163,31 +166,26 @@ def get_kreditjob_company(company, update=False):
         company_info = json.loads(
             requests.get(
                 f"https://www.kreditjob.com/api/company/{PK_NM_HASH}/info",
-                proxies=proxies,
             ).content
         )
         company_summary = json.loads(
             requests.get(
                 f"https://www.kreditjob.com/api/company/{PK_NM_HASH}/summary",
-                proxies=proxies,
             ).content
         )
         company_salaries = json.loads(
             requests.get(
                 f"https://www.kreditjob.com/api/company/{PK_NM_HASH}/salaries",
-                proxies=proxies,
             ).content
         )
         company_employee = json.loads(
             requests.get(
                 f"https://www.kreditjob.com/api/company/{PK_NM_HASH}/employee",
-                proxies=proxies,
             ).content
         )
         company_status = json.loads(
             requests.get(
                 f"https://www.kreditjob.com/api/company/{PK_NM_HASH}/states",
-                proxies=proxies,
             ).content
         )
 
@@ -210,7 +208,6 @@ def get_kreditjob_company(company, update=False):
         #     requests.post(
         #         "https://www.kreditjob.com/api/company/companyPage",
         #         data=data,
-        #         proxies=proxies,
         #     ).content
         # )
         # POST
@@ -220,7 +217,6 @@ def get_kreditjob_company(company, update=False):
             requests.post(
                 "https://www.kreditjob.com/api/jobdom/multiFilter/1/10",
                 data=data,
-                proxies=proxies,
             ).content
         )
         return company_base_content, company_info_data, company_jobdam
@@ -231,11 +227,11 @@ def get_kreditjob_company(company, update=False):
         requests.get(
             search_url,
             params=[("q", company), ("index", 0), ("size", 5)],
-            proxies=proxies,
         ).content
     )
     search_response = search_response.get("docs")
     for search_company in search_response:
+        time.sleep(2)
         try:
             CMPN_NM = search_company["CMPN_NM"]
             WKP_ADRS = search_company["WKP_ADRS"]
@@ -281,3 +277,4 @@ def get_kreditjob_company(company, update=False):
             print(company)
             print("크레딧잡 에러")
             print(traceback.print_exc())
+        
