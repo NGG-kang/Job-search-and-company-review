@@ -6,6 +6,7 @@ from fake_headers import Headers
 from celeries.tasks import get_jobplanet_info, get_kreditjob_info, get_saramin_info
 from django.core.cache import cache
 from config.utils import process_name
+from crawling.utils.functions import is_search_already
 
 
 def get_wanted_search(wanted):
@@ -60,10 +61,8 @@ def get_wanted_search(wanted):
         }
         return_list.append(data)
 
-    is_search_already = cache.get(company_name)
-    if not is_search_already:
-        cache.set(company_name, 86400, 86400)
-        get_saramin_info.apply_async(kwargs={'name': company_name, 'update': True}, queue='saramin', priority=2)
+    if not is_search_already(company_name):
+        # get_saramin_info.apply_async(kwargs={'name': company_name, 'update': True}, queue='saramin', priority=2)
         get_jobplanet_info.apply_async(kwargs={'name': company_name, 'update': True}, queue='joplanet', priority=2)
         get_kreditjob_info.apply_async(kwargs={'name': company_name, 'update': True}, queue='kreditjob', priority=2)
     return return_list, len(return_list)
